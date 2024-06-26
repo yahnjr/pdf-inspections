@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://js.arcgis.com/4.15/"></script>
+  </head>
+<style>
+body, html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  display: flex;
+}
+
+#left {
+  width: 30%;
+  height: 100%;
+  border-right: 1px solid black;
+  display: flex;
+  flex-direction: column;
+}
+
+#left iframe {
+  height: 90%;
+}
+
+#left p {
+  margin: 0;
+}
+
+#right {
+  width: 70%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#pdfDisplay {
+  height: 80%;
+}
+
+#controls {
+  height: 20%;
+  display: flex;
+  flex-direction: row;
+}
+
+.control {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left: 1px solid black;
+}
+</style>
+</head>
+<body>
+
+  <div id="left">
+    <iframe src="https://arcg.is/DWfqy0" frameborder="0"></iframe>
+    <p>Last Submitted ObjectID: <span id="maxId"></span></p>
+    <p>Next ObjectID: <span id="nextObjectId"></span></p>
+  </div>
+
+  <div id="right">
+    <iframe id="pdfDisplay" src=""></iframe>
+  
+    <div id="controls">
+      <div class="control">
+        <select id="pdfSelect" onchange="displayPDF()">
+          <option value="">Select a PDF:</option>
+          <option value="docs/parallel.pdf">Parallel</option>
+          <option value="docs/combined.pdf">Combined</option>
+          <option value="docs/perpindicular.pdf">Perpindicular</option>
+          <option value="docs/unique.pdf">Unique</option>
+        </select>
+      </div>
+  
+      <div class="control">
+        <input type="number" id="fileNumber" placeholder="Enter file number">
+      </div>
+  
+      <div class="control">
+        <button id="downloadButton" onclick="downloadPDF()">Download PDF</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+
+require([
+    "esri/layers/FeatureLayer"
+  ], function(FeatureLayer) {
+    var featureLayer = new FeatureLayer({
+      url: "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6/FeatureServer/0"
+    });
+  
+    console.log(featureLayer);
+  
+    featureLayer.queryObjectIds().then(function(ids) {
+      var maxId = Math.max(...ids);
+      var nextObjectId = maxId + 1;
+      console.log(maxId);
+      console.log(nextObjectId);
+      document.getElementById('nextObjectId').innerText = nextObjectId;
+      document.getElementById('maxId').innerText = maxId;
+    });
+  });
+  
+
+function displayPDF() {
+  var pdfSelect = document.getElementById("pdfSelect");
+  var pdfDisplay = document.getElementById("pdfDisplay");
+  var selectedPDF = pdfSelect.value;
+  
+  if (selectedPDF) {
+    pdfDisplay.src = selectedPDF;
+  } else {
+    pdfDisplay.src = "";
+  }
+}
+
+function downloadPDF() {
+  var pdfSelect = document.getElementById("pdfSelect");
+  var fileNumber = document.getElementById("fileNumber").value;
+  var selectedPDF = pdfSelect.value;
+  
+  if (selectedPDF && fileNumber) {
+    // Create a new 'a' element
+    var link = document.createElement('a');
+
+    // Set the href to the URL of the selected PDF
+    link.href = selectedPDF;
+
+    // Set the download attribute (this will prompt the file to download)
+    link.download = fileNumber + '.pdf';
+
+    // Append the 'a' element to the body (this is necessary for Firefox)
+    document.body.appendChild(link);
+
+    // Simulate a click on the 'a' element
+    link.click();
+
+    // Remove the 'a' element from the body (this is necessary for Firefox)
+    document.body.removeChild(link);
+  }
+}
+</script>
+
+</body>
+</html>
