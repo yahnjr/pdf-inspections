@@ -24,6 +24,7 @@ body, html {
 
 #left iframe {
   height: 90%;
+  width: 100%;
 }
 
 #left p {
@@ -59,6 +60,12 @@ body, html {
   justify-content: center;
   align-items: center;
   border-left: 1px solid black;
+  font-size: 1.2em; /* Make the text larger */
+}
+
+.control button, .control select, .control input {
+  font-size: 1.2em; /* Make the text inside larger */
+  padding: 5px; /* Make the buttons larger */
 }
 </style>
 </head>
@@ -78,8 +85,12 @@ body, html {
         <select id="pdfSelect" onchange="displayPDF()">
           <option value="">Select a PDF:</option>
           <option value="docs/parallel.pdf">Parallel</option>
-          <option value="docs/combined.pdf">Combined</option>
-          <option value="docs/perpindicular.pdf">Perpindicular</option>
+          <option value="docs/combination.pdf">Combination</option>
+          <option value="docs/perpendicular.pdf">Perpendicular</option>
+          <option value="docs/cut-through.pdf">Cu Through Island</option>
+          <option value="docs/end-of-walk.pdf">End of Walk</option>
+          <option value="docs/rr-bm-sw.pdf">Push Button for RR/BM/SW</option>
+          <option value="docs/ts-ps.pdf">Push Button for TS/PS</option>
           <option value="docs/unique.pdf">Unique</option>
         </select>
       </div>
