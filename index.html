@@ -48,6 +48,10 @@ body, html {
   height: 80%;
 }
 
+#formIFrame {
+  padding: 10px;
+}
+
 #controls {
   height: 20%;
   display: flex;
@@ -63,11 +67,23 @@ body, html {
   font-size: 1.2em; /* Make the text larger */
 }
 
+.selectors {
+  display:flex;
+}
+
 .control button, .control select, .control input {
   font-size: 1.2em; /* Make the text inside larger */
   padding: 5px; /* Make the buttons larger */
 }
 </style>
+<script>
+  function changeIframeSrc() {
+      var dropdown = document.getElementById("formSelect");
+      var selectedValue = dropdown.options[dropdown.selectedIndex].value;
+      var iframe = document.getElementById("formIframe");
+      iframe.src = "forms/" + selectedValue + "/index.html";
+  }
+</script>
 </head>
 <body>
 
@@ -103,27 +119,23 @@ body, html {
         <button id="downloadButton" onclick="downloadPDF()">Download PDF</button>
       </div> -->
 
-      <h2>Select Form Type:</h2>
-    <form id="formType">
-        <label for="formTypeSelect">Form Type:</label>
-        <select id="formTypeSelect">
-            <option value="perpendicular">Perpendicular</option>
-            <option value="parallel">Parallel</option>
-        </select>
-        <button type="button" onclick="loadIframe()">Load Form</button>
-    </form>
-
-    <div id="iframeContainer">
-        <iframe id="formIframe" src="" frameborder="0"></iframe>
+      <iframe id="formIframe" src="forms/parallel/index.html" width="100%" height=80% >
+      </iframe>
+      <div class="selectors">
+      <select id="formSelect" onchange="changeIframeSrc()">
+        <option value="parallel">Parallel</option>
+        <option value="combined">Combination</option>
+        <option value="perpendicular">Perpendicular</option>
+        <option value="cut-through">Cut Through Island</option>
+        <option value="end-of-walk">End of Walk</option>
+        <option value="rr-bm-sw">Push Button for RR/BM/SW</option>
+        <option value="ts-ps">Push Button for TS/PS</option>
+        <option value="unique">Unique</option>
+    </select>
+    <div class="control">
+      <button id="downloadButton" onclick="downloadPDF()">Download PDF</button>
     </div>
-
-    <script>
-        function loadIframe() {
-            var selectValue = document.getElementById('formTypeSelect').value;
-            var iframeSrc = `/forms/${selectValue}/index.html`;
-            document.getElementById('formIframe').src = iframeSrc;
-        }
-    </script>
+    </div>
 
     </div>
   </div>
