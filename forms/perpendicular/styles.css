@@ -2,17 +2,12 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f37575;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+    background-color: #e6e4e4;
+    font-size: 0.6em;
 }
 
 .top-bar {
-    background-color: #c95663;
+    background-color: #f0919c;
     color: white;
     padding: 20px;
     text-align: left;
@@ -46,7 +41,7 @@ body {
 
 .header-group input {
     margin-bottom: 2px;
-    width: 250px;
+    width: 150px;
 }
 
 label {
@@ -83,7 +78,7 @@ label {
 }
 
 .internal-column2 {
-    flex: 1
+    flex: 1;
 }
 
 .internal-column3 {
@@ -112,7 +107,7 @@ label {
 
 .middle-group label {
     margin-right: 0px;
-    min-width: 150px;  /* Adjust as needed */
+    min-width: 125px;  /* Adjust as needed */
 
 }
 
@@ -145,6 +140,7 @@ form {
 label, input {
     display: block;
     margin: 3px 0;
+    font-size: 0.8em;
 }
 
 .comments-box input {
