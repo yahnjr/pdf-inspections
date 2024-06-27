@@ -41,7 +41,7 @@ body {
 
 .header-group input {
     margin-bottom: 2px;
-    width: 150px;
+    width: 100px;
 }
 
 label {
@@ -107,12 +107,12 @@ label {
 
 .middle-group label {
     margin-right: 0px;
-    min-width: 125px;  /* Adjust as needed */
+    min-width: 100px;  /* Adjust as needed */
 
 }
 
 .middle-group input {
-    width: 100px;  /* Adjust the width as needed */
+    width: 70px;  /* Adjust the width as needed */
     align-items: right;
 }
 
@@ -144,8 +144,8 @@ label, input {
 }
 
 .comments-box input {
-    width: 250px;
-    height: 150px;
+    width: 100px;
+    height: 60px;
 }
 
 .downloadform {
