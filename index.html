@@ -75,6 +75,44 @@ body, html {
   font-size: 1.2em; /* Make the text inside larger */
   padding: 5px; /* Make the buttons larger */
 }
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 30px; /* 30px from each side */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90vw; /* Full width minus the margin */
+    height: 90vh; /* Full height minus the margin */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
 </style>
 <script>
   function changeIframeSrc() {
@@ -82,6 +120,8 @@ body, html {
       var selectedValue = dropdown.options[dropdown.selectedIndex].value;
       var iframe = document.getElementById("formIframe");
       iframe.src = "forms/" + selectedValue + "/index.html";
+      var pdfDisplay = document.getElementById("pdfDisplay");
+      pdfDisplay.src = "docs/" + selectedValue + ".pdf";
   }
 </script>
 </head>
@@ -128,15 +168,28 @@ body, html {
         <option value="perpendicular">Perpendicular</option>
         <option value="cut-through">Cut Through Island</option>
         <option value="end-of-walk">End of Walk</option>
-        <option value="rr-bm-sw">Push Button for RR/BM/SW</option>
-        <option value="ts-ps">Push Button for TS/PS</option>
         <option value="unique">Unique</option>
     </select>
-    <div class="control">
+    <!-- <div class="control">
       <button id="downloadButton" onclick="downloadPDF()">Download PDF</button>
-    </div>
+    </div> -->
+
+    <button id="myBtn">View PDF</button>
+
+    <!-- The Modal -->
+
+</div>
     </div>
 
+    </div>
+    <div id="myModal" class="modal">
+    
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <iframe id="pdfDisplay" src="docs/parallel.pdf" style="width:90%; height:90%;"></iframe>
+      </div>
+    
     </div>
   </div>
 
@@ -197,6 +250,31 @@ function downloadPDF() {
 
     // Remove the 'a' element from the body (this is necessary for Firefox)
     document.body.removeChild(link);
+  }
+}
+
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
   }
 }
 </script>

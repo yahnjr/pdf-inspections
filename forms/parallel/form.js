@@ -1,5 +1,5 @@
 function downloadCSV() {
-    const inputs = document.querySelectorAll('input[type="text"]');
+    const inputs = document.querySelectorAll('input[type="text"], input[type="number"], select');
     const csvRows = [];
 
     // Collect headers
