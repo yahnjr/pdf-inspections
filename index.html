@@ -78,7 +78,7 @@ body, html {
   </div>
 
   <div id="right">
-    <iframe id="pdfDisplay" src=""></iframe>
+    <!-- <iframe id="pdfDisplay" src=""></iframe>
   
     <div id="controls">
       <div class="control">
@@ -87,7 +87,7 @@ body, html {
           <option value="docs/parallel.pdf">Parallel</option>
           <option value="docs/combination.pdf">Combination</option>
           <option value="docs/perpendicular.pdf">Perpendicular</option>
-          <option value="docs/cut-through.pdf">Cu Through Island</option>
+          <option value="docs/cut-through.pdf">Cut Through Island</option>
           <option value="docs/end-of-walk.pdf">End of Walk</option>
           <option value="docs/rr-bm-sw.pdf">Push Button for RR/BM/SW</option>
           <option value="docs/ts-ps.pdf">Push Button for TS/PS</option>
@@ -101,7 +101,30 @@ body, html {
   
       <div class="control">
         <button id="downloadButton" onclick="downloadPDF()">Download PDF</button>
-      </div>
+      </div> -->
+
+      <h2>Select Form Type:</h2>
+    <form id="formType">
+        <label for="formTypeSelect">Form Type:</label>
+        <select id="formTypeSelect">
+            <option value="perpendicular">Perpendicular</option>
+            <option value="parallel">Parallel</option>
+        </select>
+        <button type="button" onclick="loadIframe()">Load Form</button>
+    </form>
+
+    <div id="iframeContainer">
+        <iframe id="formIframe" src="" frameborder="0"></iframe>
+    </div>
+
+    <script>
+        function loadIframe() {
+            var selectValue = document.getElementById('formTypeSelect').value;
+            var iframeSrc = `/forms/${selectValue}/index.html`;
+            document.getElementById('formIframe').src = iframeSrc;
+        }
+    </script>
+
     </div>
   </div>
 
