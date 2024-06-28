@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perpindicular</title>
+    <title>End of Walk</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
@@ -11,7 +11,7 @@
     <div class="top-bar">
         <div class="top-top-bar">
             <div class="title">
-                <h1>ADA Curb Ramp New Constriction Inspection Form (Perpendicular)</h1>
+                <h1>ADA Curb Ramp New Constriction Inspection Form (End of Walk)</h1>
             </div>
             <div class="print-button">
                 <form id="fileNameForm">
@@ -53,8 +53,8 @@
     <div class="container">
         <div class="column-side">
             <form id="dataForm1">
-                <h2>Ramp Style: Perpendicular</h2>
-                <img src="../images/perpindicular.png">
+                <h2>Ramp Style: End of Walk</h2>
+                <img src="../images/end-of-walk.png">
         </div>
         <div class="column-mid">
             <div class="internal-column-container">
@@ -95,34 +95,33 @@
                                 </select>
                             </div>
                             <div class="middle-group">
-                                <label for="gutter-flow">Gutter Flow Slope</label>
-                                <input type="number" id="gutter-flow" name="gutter-flow">
+                                <label for="ramp-landing">Location of Landing in Relation to Ramp (top or bottom)</label>
+                                <select id="ramp-landing" name="ramp-landing">
+                                    <option value="">""</option>
+                                    <option value="top">Top</option>
+                                    <option value="bottom">Bottom</option>
+                                </select>
                             </div>
                             <div class="middle-group">
-                                <label for="curb-slope">Curb Running Slope (avg)</label>
-                                <input type="text" id="curb-slope" name="curb-slope">
+                                <label for="transition-type">Transition Type</label>
+                                <select id="transition-type" name="transition-type">
+                                    <option value="">""</option>
+                                    <option value="tapered">Tapered</option>
+                                    <option value="continuous">Continuous</option>
+                                </select>
                             </div>
                             <div class="middle-group">
-                                <label for="counter-slope">Counter Slope (+/-) *2</label>
-                                <input type="text" id="counter-slope" name="counter-slope">
-                            </div>
-                            <div class="middle-group">
-                                <label for="long-dist">Longest distance from corner to back of curb</label>
-                                <input type="text" id="long-dist" name="long-dist">
-                            </div>
-                            <div class="middle-group">
-                                <label for="detectable-warning2">Detectable warning extense full width of ramp throat opening</label>
-                                <select id="detectable-warning2" name="detectable-warning2">
+                                <label for="change-direction">Change of Direction at End of Walk</label>
+                                <select id="change-direction" name="change-direction">
                                     <option value="Y">Yes</option>
                                     <option value="N">No</option>
                                 </select>
                             </div>
                             <div class="middle-group">
-                                <label for="turn-landing">Turn Space Landing None</label>
-                                <select id="turn-landing" name="turn-landing">
-                                    <option value="none">None</option>
-                                    <option value="turn-space">Turn Space</option>
-                                    <option value="landing">Landing</option>
+                                <label for="end-barricade">End of Walk Barricade Posted</label>
+                                <select id="end-barricade" name="end-barricade">
+                                    <option value="Y">Yes</option>
+                                    <option value="N">No</option>
                                 </select>
                             </div>
                             <div class="middle-group">
@@ -130,8 +129,8 @@
                                 <input type="text" id="widthx" name="widthx">
                             </div>
                             <div class="middle-group">
-                                <label for="Length Y">Length Y</label>
-                                <input type="text" id="Length Y" name="Length Y">
+                                <label for="lengthy">Length Y</label>
+                                <input type="text" id="lengthy" name="lengthy">
                             </div>
                             <div class="middle-group">
                                 <label for="obstruction">Back of Ramp Obstruction</label>
@@ -163,12 +162,8 @@
                                 <label for="clear-width">Clear Width (feet)</label>
                                 <input type="text" id="clear-width" name="clear-width">
                             </div>
-                            <div class="middle-group">
-                                <label for="intersection-control">Intersection Control Type</label>
-                                <select id="intersection-control" name="intersection-control">
-                                    <option value="MB">MB</option>
-                                    <option value="SU">SU</option>
-                                    <option value="SY">SY</option>
+                            <div>
+                                <p></p>
                             </div>
                             <div class="middle-group">
                                 <label for="horizontal-gaps">Horizontal Gaps</label>
@@ -209,36 +204,20 @@
                                 </select>
                               </div>
                               <div class="middle-group2">
-                                <label for="gutter-flow-pf">≤* (Pass) &gt;* (Fail)</label>
-                                <select id="gutter-flow-pf" name="gutter-flow-pf">
-                                  <option value="pass">Pass</option>
-                                  <option value="fail">Fail</option>
-                                </select>
+                                <p></p>
                               </div>
                               <div class="middle-group2">
-                                <label for="curb-slope-pf">≤8.3% (Pass) &gt;8.3% (Fail)</label>
-                                <select id="curb-slope-pf" name="curb-slope-pf">
-                                  <option value="pass">Pass</option>
-                                  <option value="fail">Fail</option>
-                                </select>
+                                <p></p>
                               </div>
                               <div class="middle-group2">
-                                <label for="counter-slope-pf">≤|5.0|% (Pass) &gt;|5.0|% (Fail)</label>
-                                <select id="counter-slope-pf" name="counter-slope-pf">
-                                  <option value="pass">Pass</option>
-                                  <option value="fail">Fail</option>
-                                </select>
+                                <p></p>
                               </div>
                               <div class="middle-group2">
-                                <label for="long-dist-pf">&lt;5.0' (Pass) ≥5.0' (Fail)</label>
-                                <select id="long-dist-pf" name="long-dist-pf">
-                                  <option value="pass">Pass</option>
-                                  <option value="fail">Fail</option>
-                                </select>
+                                <p></p>
                               </div>
-                            <div class="middle-group2">
-                              <p></p>
-                            </div>
+                              <div class="middle-group2">
+                                <p></p>
+                              </div>
                               <div class="middle-group2">
                                 <label for="widthx-pf">≥4.0' (Pass) &lt;4.0' (Fail)</label>
                                 <select id="widthx-pf" name="widthx-pf">
@@ -249,13 +228,6 @@
                               <div class="middle-group2">
                                 <label for="lengthy-pf">≥4.0'*1 (Pass) &lt;4.0'*1 (Fail)</label>
                                 <select id="lengthy-pf" name="lengthy-pf">
-                                  <option value="pass">Pass</option>
-                                  <option value="fail">Fail</option>
-                                </select>
-                              </div>
-                              <div class="middle-group2">
-                                <label for="obstruction-pf">≥5.0' *1 (Pass) &lt;5.0' *1 (Fail)</label>
-                                <select id="obstruction-pf" name="obstruction-pf">
                                   <option value="pass">Pass</option>
                                   <option value="fail">Fail</option>
                                 </select>

@@ -65,24 +65,10 @@ img {
 .column-side {
     flex: 2;
     display: flex;
-    flex-direction: column;
     padding: 10px;
     border: 1px solid #ccc;
     margin: 0 10px;
-}
-  
-.side-lower {
-display: flex;
-justify-content: space-between;
-}
-
-.side-lower > div {
-flex: 1;
-margin-right: 10px; /* Optional: add spacing between the two divs */
-}
-
-.side-lower > div:last-child {
-margin-right: 0; /* Remove margin on the last div */
+    max-width: fit-content;
 }
 
 .column-mid {
@@ -91,11 +77,13 @@ margin-right: 0; /* Remove margin on the last div */
     padding: 10px;
     border: 1px solid #ccc;
     margin: 0 10px;
+    max-width: 400px;
 }
 
 .internal-column-container {
     display:flex;
     justify-content: space-between;
+    max-width: 400px;
 }
 
 .internal-column2 {
