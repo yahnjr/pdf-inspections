@@ -113,6 +113,12 @@ img {
     gap: 10px;
 }
 
+#dataForm3 {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .middle-group {
     display: flex;
     align-items: center;
