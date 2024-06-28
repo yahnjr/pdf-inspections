@@ -113,6 +113,20 @@ body, html {
     text-decoration: none;
     cursor: pointer;
 }
+
+#mapframe {
+  width: 80vw;
+  height: 80vh;
+}
+
+button {
+    background-color: white;
+    color: #333;
+    border: 2px solid #333;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+}
 </style>
 <script>
   function changeIframeSrc() {
@@ -175,7 +189,7 @@ body, html {
     </div> -->
 
     <button id="myBtn">View PDF</button>
-
+    <button id="mapBtn">View Map</button>
     <!-- The Modal -->
 
 </div>
@@ -191,29 +205,59 @@ body, html {
       </div>
     
     </div>
+    <div id="mapModal" class="modal">
+    
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="mapframe"></div>
+      </div>
+    
+    </div>
   </div>
 
 <script>
 
 require([
-    "esri/layers/FeatureLayer"
-  ], function(FeatureLayer) {
-    var featureLayer = new FeatureLayer({
-      url: "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6/FeatureServer/0"
-    });
-  
-    console.log(featureLayer);
-  
-    featureLayer.queryObjectIds().then(function(ids) {
-      var maxId = Math.max(...ids);
-      var nextObjectId = maxId + 1;
-      console.log(maxId);
-      console.log(nextObjectId);
-      document.getElementById('nextObjectId').innerText = nextObjectId;
-      document.getElementById('maxId').innerText = maxId;
-    });
+  "esri/Map",
+  "esri/views/MapView",
+  "esri/layers/FeatureLayer"
+], function(Map, MapView, FeatureLayer) {
+
+  const popupTemplate = {
+    title: "{OBJECTID}"
+  }
+
+  const featureLayer = new FeatureLayer({
+    url: "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6/FeatureServer/0",
+    popupTemplate: popupTemplate
   });
-  
+
+  var map = new Map({
+    basemap: "satellite"
+  });
+
+  var view = new MapView({
+    container: "mapframe",
+    map: map,
+    center: [-122.99501995806335, 45.59693760590502], 
+    zoom: 14 // Adjust zoom level as needed
+  });
+
+  // Add feature layer to map
+  map.add(featureLayer);
+
+  // Query for the object IDs and display max and next object IDs
+  featureLayer.queryObjectIds().then(function(ids) {
+    var maxId = Math.max(...ids);
+    var nextObjectId = maxId + 1;
+    console.log(maxId);
+    console.log(nextObjectId);
+    document.getElementById('nextObjectId').innerText = nextObjectId;
+    document.getElementById('maxId').innerText = maxId;
+  });
+
+});
 
 function displayPDF() {
   var pdfSelect = document.getElementById("pdfSelect");
@@ -253,28 +297,41 @@ function downloadPDF() {
   }
 }
 
-var modal = document.getElementById("myModal");
+// Handle PDF modal
+var pdfModal = document.getElementById("myModal");
+var pdfBtn = document.getElementById("myBtn");
+var pdfClose = pdfModal.getElementsByClassName("close")[0];
 
-// Get the button that opens the modal
-var btn = document.getElementById("myBtn");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks the button, open the modal 
-btn.onclick = function() {
-  modal.style.display = "block";
+pdfBtn.onclick = function() {
+  pdfModal.style.display = "block";
 }
 
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
+pdfClose.onclick = function() {
+  pdfModal.style.display = "none";
 }
 
-// When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
+  if (event.target == pdfModal) {
+    pdfModal.style.display = "none";
+  }
+}
+
+// Handle map modal
+var mapModal = document.getElementById("mapModal");
+var mapBtn = document.getElementById("mapBtn");
+var mapClose = mapModal.getElementsByClassName("close")[0];
+
+mapBtn.onclick = function() {
+  mapModal.style.display = "block";
+
+mapClose.onclick = function() {
+  mapModal.style.display = "none";
+}
+}
+
+window.onclick = function(event) {
+  if (event.target == mapModal) {
+    mapModal.style.display = "none";
   }
 }
 </script>

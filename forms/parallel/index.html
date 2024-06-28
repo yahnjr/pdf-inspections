@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parallel</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
     <div class="top-bar">
@@ -315,7 +316,43 @@
     </div>
 </div>
 </div>
-    
-    <script src="form.js"></script>
+<script>
+    function downloadXLSX() {
+        const inputs = document.querySelectorAll('input[type="text"], input[type="number"], select');
+        const data = [];
+
+        // Collect headers
+        const headers = [];
+        inputs.forEach(input => {
+            headers.push(input.name);
+        });
+        data.push(headers);
+
+        // Collect values
+        const values = [];
+        inputs.forEach(input => {
+            values.push(input.value);
+        });
+        data.push(values);
+
+        // Convert data to worksheet and then to XLSX
+        const worksheet = XLSX.utils.aoa_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        const xlsxData = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([xlsxData], { type: 'application/octet-stream' });
+
+        // Get file name from input
+        const fileName = document.getElementById('fileName').value || 'data';
+
+        // Create download link
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${fileName}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
 </body>
 </html>

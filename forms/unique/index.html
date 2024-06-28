@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>End of Walk</title>
+    <title>Parallel</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
     <div class="top-bar">
         <div class="top-top-bar">
             <div class="title">
-                <h1>ADA Curb Ramp New Constriction Inspection Form (End of Walk)</h1>
+                <h1>ADA Curb Ramp New Constriction Inspection Form (Unique Design)</h1>
             </div>
             <div class="print-button">
                 <form id="fileNameForm">
@@ -52,8 +53,26 @@
     <div class="container">
         <div class="column-side">
             <form id="dataForm1">
-                <h2>Ramp Style: Perpendicular</h2>
-                <img src="../pdfeditor2/form/images/perpindicular.png">
+                <h2>Ramp Style: Unique Design</h2>
+                <img src="../images/unique.png">
+            </form>
+            <div class="side-lower">
+                <div>
+                    <form>
+                        <label for="warning2curb">Longest distance from detectable warning corner to back of curb (to nearest inch)</label>
+                        <input type="number" id="warning2curb" name="warning2curb">
+                    </form>
+                </div>
+                <div>
+                    <label for="warning-fullwidth">Detectable warning extends full width of ramp throat opening</label>
+                        <select id="warning-fullwidth" name="warning-fullwidth">
+                            <option value="Y">Yes</option>
+                            <option value="N">No</option>
+                        </select>
+                </div>
+
+            </div>
+            
         </div>
         <div class="column-mid">
             <div class="internal-column-container">
@@ -73,15 +92,25 @@
                     </div>
                     <div class="middle-group">
                         <label for="detectable-warning">Detectable Warning</label>
-                        <input type="text" id="detectable-warning" name="detectable-warning">
+                        <select id="detectable-warning" name="detectable-warning">
+                            <option value="Y">Yes</option>
+                            <option value="N">No</option>
+                        </select>
                     </div>
                     <div class="middle-group">
                         <label for="lip-height">Lip Height</label>
-                        <input type="text" id="lip-height" name="lip-height">
+                        <select id="lip-height" name="lip-height">
+                            <option value="0">0</option>
+                            <option value="0.5">0.5</option>
+                            <option value="1">1.0</option>
+                            <option value="2">2.0</option>
+                            <option value="3">3.0</option>
+                            <option value="4">4.0</option>
+                        </select>
                     </div>
                     <div class="middle-group">
                         <label for="gutter-flow">Gutter Flow Slope</label>
-                        <input type="text" id="gutter-flow" name="gutter-flow">
+                        <input type="number" id="gutter-flow" name="gutter-flow">
                     </div>
                     <div class="middle-group">
                         <label for="curb-slope">Curb Running Slope (avg)</label>
@@ -92,16 +121,35 @@
                         <input type="text" id="counter-slope" name="counter-slope">
                     </div>
                     <div class="middle-group">
-                        <label for="long-dist">Longest distance from corner to back of curb</label>
-                        <input type="text" id="long-dist" name="long-dist">
+                        <label for="dept-warning-width">Dept. warning full width of ramp</label>
+                        <select id="dept-warning-width" name="dept-warning-width">
+                            <option value="Y">Yes</option>
+                            <option value="N">No</option>
+                        </select>
                     </div>
                     <div class="middle-group">
-                        <label for="detectable-warning2">Detectable warning extense full width of ramp throat opening</label>
-                        <input type="text" id="detectable-warning2" name="detectable-warning2">
+                        <label for="runslope-2">Running Slope 2</label>
+                        <input type="number" id="runslope-2" name="runslope-2">
                     </div>
                     <div class="middle-group">
-                        <label for="turn-landing">Turn Space Landing None</label>
-                        <input type="text" id="turn-landing" name="turn-landing">
+                        <label for="length2">Length 2</label>
+                        <input type="number" id="Length2" name="Length2">
+                    </div>
+                    <div class="middle-group">
+                        <label for="cross-slope2">Cross Slope 2</label>
+                        <input type="number" id="cross-slope2" name="cross-slope2">
+                    </div>
+                    <div class="middle-group">
+                        <label for="runslope-3">Running Slope 3</label>
+                        <input type="number" id="runslope-3" name="runslope-3">
+                    </div>
+                    <div class="middle-group">
+                        <label for="length3">Length 3</label>
+                        <input type="number" id="Length3" name="Length3">
+                    </div>
+                    <div class="middle-group">
+                        <label for="cross-slope3">Cross Slope 3</label>
+                        <input type="number" id="cross-slope3" name="cross-slope3">
                     </div>
                     <div class="middle-group">
                         <label for="widthx">Width X</label>
@@ -113,23 +161,18 @@
                     </div>
                     <div class="middle-group">
                         <label for="obstruction">Back of Ramp Obstruction</label>
-                        <input type="text" id="obstruction" name="obstruction">
+                        <select id="obstruction" name="obstruction">
+                            <option value="Y">Yes</option>
+                            <option value="N">No</option>
+                        </select>
                     </div>
                     <div class="middle-group">
-                        <label for="slopex">Slope X</label>
+                        <label for="slopex">Slope X (Cross slope 1)</label>
                         <input type="text" id="slopex" name="slopex">
                     </div>
                     <div class="middle-group">
-                        <label for="slopey">Slope Y</label>
+                        <label for="slopey">Slope Y (Running slope 1)</label>
                         <input type="text" id="slopey" name="slopey">
-                    </div>
-                    <div class="middle-group">
-                        <label for="flare-slope1">Flare Slope 1</label>
-                        <input type="text" id="flare-slope1" name="flare-slope1">
-                    </div>
-                    <div class="middle-group">
-                        <label for="flare-slope2">Flare Slope 2</label>
-                        <input type="text" id="flare-slope2" name="flare-slope2">
                     </div>
                     <div class="middle-group">
                         <label for="clear-width">Clear Width (feet)</label>
@@ -137,7 +180,10 @@
                     </div>
                     <div class="middle-group">
                         <label for="intersection-control">Intersection Control Type</label>
-                        <input type="text" id="intersection-control" name="intersection-control">
+                        <select id="intersection-control" name="intersection-control">
+                            <option value="MB">MB</option>
+                            <option value="SU">SU</option>
+                            <option value="SY">SY</option>
                     </div>
                     <div class="middle-group">
                         <label for="horizontal-gaps">Horizontal Gaps</label>
@@ -249,7 +295,7 @@
                 </form>
     </div>
         <div class="internal-column3">
-            <img src="../pdfeditor2/form/images/intersection.png">
+            <img src="../images/intersection.png">
         </div>
     </div>
         </div>
@@ -288,7 +334,43 @@
     </div>
 </div>
 </div>
-    
-    <script src="form.js"></script>
+<script>
+    function downloadXLSX() {
+        const inputs = document.querySelectorAll('input[type="text"], input[type="number"], select');
+        const data = [];
+
+        // Collect headers
+        const headers = [];
+        inputs.forEach(input => {
+            headers.push(input.name);
+        });
+        data.push(headers);
+
+        // Collect values
+        const values = [];
+        inputs.forEach(input => {
+            values.push(input.value);
+        });
+        data.push(values);
+
+        // Convert data to worksheet and then to XLSX
+        const worksheet = XLSX.utils.aoa_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        const xlsxData = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([xlsxData], { type: 'application/octet-stream' });
+
+        // Get file name from input
+        const fileName = document.getElementById('fileName').value || 'data';
+
+        // Create download link
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${fileName}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
 </body>
 </html>
