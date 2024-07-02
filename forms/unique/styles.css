@@ -50,40 +50,44 @@ label {
     font-size: 10pt;
 }
 
-.container {
-    display: flex;
-    justify-content: space-around;
-    margin: 20px;
-}
-
 img {
     width:100%;
     max-width: 180px;
     overflow: hidden;
 }
 
-.column-side {
-    flex: 2;
+.container {
     display: flex;
-    padding: 10px;
+    gap: 20px;
+    padding: 20px;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    width: 90%;
+  }
+  
+  .box {
     border: 1px solid #ccc;
-    margin: 0 10px;
-    max-width: fit-content;
-}
-
-.column-mid {
-    flex: 3;
-    display: flex;
     padding: 10px;
-    border: 1px solid #ccc;
-    margin: 0 10px;
-    max-width: 400px;
-}
+  }
+  
+  .side-box {
+    flex: 1;
+  }
+  
+  .middle-box {
+    flex: 1.5;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
 
-.internal-column-container {
+  .middle-group, .middle-group2 {
+    background-color: #ebebeb;
+  }
+
+  .internal-column-container {
     display:flex;
     justify-content: space-between;
-    max-width: 400px;
 }
 
 .internal-column2 {
@@ -98,68 +102,12 @@ img {
     flex: 3
 }
 
-.internal-column {
-    flex: 1;
-    padding: 10px;
+.internal-column3 input {
+    max-width: 80px;
 }
 
 .vertbox-container {
     position: absolute;
-}
-
-#dataForm2 {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-#dataForm3 {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.middle-group {
-    display: flex;
-    align-items: center;
-}
-
-.middle-group label {
-    margin-right: 0px;
-    min-width: 100px;  /* Adjust as needed */
-
-}
-
-.middle-group input {
-    width: 70px;  /* Adjust the width as needed */
-    align-items: right;
-}
-
-.middle-group2 {
-    display: flex;
-    align-items: center;
-}
-
-.middle-group2 label {
-    margin-right: 0px;
-    min-width: 75px;  /* Adjust as needed */
-
-}
-
-.middle-group2 input {
-    width: 20px;  /* Adjust the width as needed */
-    align-items: right;
-}
-
-form {
-    margin: 0;
-    padding: 0;
-}
-
-label, input {
-    display: block;
-    margin: 3px 0;
-    font-size: 0.8em;
 }
 
 .comments-box input {
