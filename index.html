@@ -147,30 +147,6 @@ button {
   </div>
 
   <div id="right">
-    <!-- <iframe id="pdfDisplay" src=""></iframe>
-  
-    <div id="controls">
-      <div class="control">
-        <select id="pdfSelect" onchange="displayPDF()">
-          <option value="">Select a PDF:</option>
-          <option value="docs/parallel.pdf">Parallel</option>
-          <option value="docs/combination.pdf">Combination</option>
-          <option value="docs/perpendicular.pdf">Perpendicular</option>
-          <option value="docs/cut-through.pdf">Cut Through Island</option>
-          <option value="docs/end-of-walk.pdf">End of Walk</option>
-          <option value="docs/rr-bm-sw.pdf">Push Button for RR/BM/SW</option>
-          <option value="docs/ts-ps.pdf">Push Button for TS/PS</option>
-          <option value="docs/unique.pdf">Unique</option>
-        </select>
-      </div>
-  
-      <div class="control">
-        <input type="number" id="fileNumber" placeholder="Enter file number">
-      </div>
-  
-      <div class="control">
-        <button id="downloadButton" onclick="downloadPDF()">Download PDF</button>
-      </div> -->
 
       <iframe id="formIframe" src="forms/parallel/index.html" width="100%" height=90% >
       </iframe>
@@ -183,9 +159,6 @@ button {
         <option value="end-of-walk">End of Walk</option>
         <option value="unique">Unique</option>
     </select>
-    <!-- <div class="control">
-      <button id="downloadButton" onclick="downloadPDF()">Download PDF</button>
-    </div> -->
 
     <button id="myBtn">View PDF</button>
     <button id="mapBtn">View Map</button>
@@ -213,6 +186,11 @@ button {
   </div>
 
 <script>
+
+window.addEventListener('beforeunload', function (event) {
+            event.preventDefault();
+            event.returnValue = '';
+        });
 
 require([
   "esri/Map",

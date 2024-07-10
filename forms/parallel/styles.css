@@ -110,6 +110,10 @@ img {
     position: absolute;
 }
 
+.vertbox {
+    max-width: 270px;
+}
+
 .comments-box input {
     width: 100px;
     height: 60px;

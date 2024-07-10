@@ -6,6 +6,7 @@
     <title>Parallel</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script href="parallel.js"></script>
 </head>
 <body>
     <div class="top-bar">
@@ -29,7 +30,7 @@
                 <label for="ns-road">North-South Road Name</label>
             </div>
             <div class="header-group">
-                <input type="text" id="proj-num" name="proj-num">
+                <input type="text" id="proj-num" name="proj-num" value="23885.56">
                 <label for="proj-num">Project No.</label>
             </div>
             <div class="header-group">
@@ -45,7 +46,7 @@
                 <label for="ew-road">East-West Road Name</label>
             </div>
             <div class="header-group">
-                <input type="text" id="cal-date" name="cal-date">
+                <input type="date" id="cal-date" name="cal-date">
                 <label for="cal-date">Calibration Date</label>
             </div>
         </form>
@@ -160,11 +161,11 @@
                   <div class="middle-group2">
                     <p>~~~~</p>
                   </div>
-                  <div class="middle-group2">
-                    <p>~~~~</p>
-                  </div>
                   <div class="middle-group">
                       <p>RAMP RUN 2</p>
+                    </div>
+                    <div class="middle-group2">
+                      <p>~~~~</p>
                     </div>
                   <div class="middle-group">
                       <label for="runslope-2">Running Slope 2</label>
@@ -415,7 +416,10 @@
             </div>
           </div>
     </div>
+
+<script src="parallel.js"></script>
 <script>
+
     function downloadXLSX() {
         const inputs = document.querySelectorAll('input[type="text"], input[type="number"], select');
         const data = [];

@@ -31,3 +31,18 @@ function downloadCSV() {
     link.click();
     document.body.removeChild(link);
 }
+
+function setDefaultDate() {
+    const dateInput = document.getElementById('cal-date');
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const dd = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `${mm}-${dd}-${yyyy}`;
+    dateInput.value = formattedDate;
+}
+
+window.addEventListener('DOMContentLoaded', (event) => {
+    // Set default date when the page loads
+    setDefaultDate();
+});
