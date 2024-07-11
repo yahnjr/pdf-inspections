@@ -11,31 +11,78 @@ function autoPFupper(valueFieldId, passFailId, threshold) {
                 passFailSelect.value = 'fail';
             }
         } else {
-            passFailSelect.value = ''; // If input is not a valid number, reset the select element
+            passFailSelect.value = ''; 
         }
     };
+}
+
+function autoPFlower(valueFieldId, passFailId, threshold) {
+    return function() {
+        const valueInput = document.getElementById(valueFieldId);
+        const passFailSelect = document.getElementById(passFailId);
+        const value = parseFloat(valueInput.value);
+
+        if (!isNaN(value)) {
+            if (value >= threshold) {
+                passFailSelect.value = 'pass';
+            } else {
+                passFailSelect.value = 'fail';
+            }
+        } else {
+            passFailSelect.value = ''; 
+        }
+    };
+}
+
+function autosetParallel(valueFieldId, valueFieldId2) {
+    return function() {
+        const valueFieldInput = document.getElementById(valueFieldId);
+        const valueFieldInput2 = document.getElementById(valueFieldId2);
+        const value = parseFloat(valueFieldInput.value);
+
+        if (!isNaN(value)) {
+            valueFieldInput2.value = value; 
+        } else {
+            valueFieldInput2.value = '';
+        }
+    }
+}
+
+function addEventListeners(fieldId, passFailId, threshold, targetFieldId, logic = 'upper') {
+    const inputField = document.getElementById(fieldId);
+    const passFailField = document.getElementById(passFailId);
+
+    if (inputField && passFailField) {
+        const passFailFunction = logic === 'upper' ? autoPFupper(fieldId, passFailId, threshold) : autoPFlower(fieldId, passFailId, threshold);
+        inputField.addEventListener('input', passFailFunction);
+        console.log(`Event listener added for ${fieldId}`);
+    } else {
+        console.log(`${fieldId} input or ${passFailId} pass/fail select not found`);
+    }
+
+    if (targetFieldId) {
+        const targetField = document.getElementById(targetFieldId);
+        if (inputField && targetField) {
+            inputField.addEventListener('input', autosetParallel(fieldId, targetFieldId));
+            console.log(`Event listener added to sync ${fieldId} with ${targetFieldId}`);
+        } else {
+            console.log(`${fieldId} input or ${targetFieldId} not found`);
+        }
+    }
 }
 
 window.addEventListener('DOMContentLoaded', (event) => {
     console.log("DOM fully loaded and parsed");
 
-    // Add event listener to the runslope input
-    const runslopeInput = document.getElementById('runslope-1');
-    const runslopepf = document.getElementById('runslope-1-pf');
-    if (runslopeInput && runslopepf) {
-        runslopeInput.addEventListener('input', autoPFupper('runslope-1', 'runslope-1-pf', 2));
-        console.log("Event listener added for runslope-1");
-    } else {
-        console.log("Runslope input or pass/fail select not found");
-    }
-
-    // Add event listener to the cross slope input
-    const crossslopeInput = document.getElementById('cross-slope1');
-    const crossslopepf = document.getElementById('cross-slope1-pf');
-    if (crossslopeInput && crossslopepf) {
-        crossslopeInput.addEventListener('input', autoPFupper('cross-slope1', 'cross-slope1-pf', 2));
-        console.log("Event listener added for cross-slope1");
-    } else {
-        console.log("Cross-slope input or pass/fail select not found");
-    }
+    addEventListeners('runslope-1', 'runslope-1-pf', 2, 'slopex');
+    addEventListeners('cross-slope1', 'cross-slope1-pf', 2, 'slopey');
+    addEventListeners('cross-slope2', 'cross-slope2-pf', 2);
+    addEventListeners('cross-slope3', 'cross-slope3-pf', 2);
+    addEventListeners('runslope-2', 'runslope-2-pf', 8.3);
+    addEventListeners('runslope-3', 'runslope-3-pf', 8.3);
+    addEventListeners('widthx', 'widthx-pf', 4, null, 'lower');
+    addEventListeners('lengthy', 'lengthy-pf', 4, null, 'lower');
+    addEventListeners('clear-width', 'clearwidth-pf', 4, null, 'lower');
+    addEventListeners('curb-slope', 'curb-slope-pf', 8.3);
+    addEventListeners('counter-slope', 'counter-slope-pf', 5);
 });
