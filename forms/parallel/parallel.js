@@ -1,3 +1,40 @@
+function autoSave() {
+    const inputs = document.querySelectorAll('input[type="text"], input[type="number"], select');
+    const formData = {};
+
+    inputs.forEach(input => {
+        formData[input.name] = input.value;
+    });
+
+    localStorage.setItem('formData', JSON.stringify(formData));
+}
+
+// Restore form data from localStorage
+function restoreData() {
+    const savedData = localStorage.getItem('formData');
+    if (savedData) {
+        const formData = JSON.parse(savedData);
+        Object.keys(formData).forEach(key => {
+            const input = document.querySelector(`[name="${key}"]`);
+            if (input) {
+                input.value = formData[key];
+            }
+        });
+    }
+}
+
+// Call autoSave function every 5 seconds
+setInterval(autoSave, 5000);
+
+// Restore data on page load
+window.addEventListener('load', restoreData);
+
+// Confirm before leaving the page
+window.addEventListener('beforeunload', function (event) {
+    event.preventDefault();
+    event.returnValue = '';
+});
+
 function autoPFupper(valueFieldId, passFailId, threshold) {
     return function() {
         const valueInput = document.getElementById(valueFieldId);
