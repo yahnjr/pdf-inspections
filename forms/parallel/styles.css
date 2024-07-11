@@ -85,6 +85,14 @@ img {
     background-color: #ebebeb;
   }
 
+  .middle-group input, .middle-group2 input {
+    height: 30px;
+  }
+
+  .middle-group select, .middle-group2 select {
+    height: 30px;
+  }
+
   .internal-column-container {
     display:flex;
     justify-content: space-between;
@@ -108,10 +116,6 @@ img {
 
 .vertbox-container {
     position: absolute;
-}
-
-.vertbox {
-    max-width: 270px;
 }
 
 .comments-box input {
