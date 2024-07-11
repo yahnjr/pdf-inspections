@@ -227,6 +227,9 @@ require([
     console.log(nextObjectId);
     document.getElementById('nextObjectId').innerText = nextObjectId;
     document.getElementById('maxId').innerText = maxId;
+
+    const iframe = document.getElementById('formIframe');
+    iframe.contentWindow.postMessage({ nextObjectId: nextObjectId }, '*');
   });
 
 });

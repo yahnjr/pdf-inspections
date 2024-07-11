@@ -59,6 +59,84 @@
                 <h2>Ramp Style: Parallel</h2>
                 <img src="../images/parallel.png">
         </div>
+        <div class="vertbox-container">
+          <div class="vertbox">
+              <div class="internal-column-container">
+              <div class="internal-column2">
+                  <form id="dataForm4">
+                      <select id="corner-position" name="corner-position"><br>
+                        <option value=""></option>
+                        <option value="1">1</option>
+                        <option value="1A">1A</option>
+                        <option value="2">2</option>
+                        <option value="2A">2A</option>
+                        <option value="3">3</option>
+                        <option value="3A">3A</option>
+                        <option value="4">4</option>
+                        <option value="4A">4A</option>
+                        <option value="5">5</option>
+                        <option value="5A">5A</option>
+                        <option value="6">6</option>
+                        <option value="6A">6A</option>
+                        <option value="7">7</option>
+                        <option value="7A">7A</option>
+                        <option value="8">8</option>
+                        <option value="8A">8A</option>
+                      </select>
+                      <p></p>
+                      <p></p>
+                      <label for="corner-position">Corner Position</label>
+                      <select id="ramp-position" name="ramp-position"><br>
+                        <option value=""></option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        </select>
+                      <label for="ramp-position">Ramp Position</label>
+                  </form>
+      </div>
+          <div class="internal-column3">
+              <img src="../images/intersection.png">
+          </div>
+      </div>
+          </div>
+          <div class="vertbox">
+              <form id="dataForm5">
+                  <div class="comments-box">
+                      <label for="comments">Comments</label>
+                      <input type="text" id="comments" name="comments"><br>
+                  </div>
+              </form>
+          </div>
+          <div class="vertbox">
+              <div class="internal-column-container">
+              <div class="internal-column3">
+                  <form id="signatures-form">
+                      <input type="text" id="inspector-sig" name="inspector-sig"><br>
+                      <label for="inspector-sig">Inspector's Signature</label>
+                      <p></p>
+                      <input type="text" id="print-name" name="print-name"><br>
+                      <label for="print-name">Print name clearly</label>
+                      <p></p>
+                      <input type="text" id="agency" name="agency" value="3J Consulting"><br>
+                      <label for="agency">Company/Agency</label>
+                  </form>
+              </div>
+              <div class="internal-column2">
+                  <form id="signatures-dates">
+                      <input type="text" id="inspection-date" name="inspection-date"><br>
+                      <label for="inspection-date">Inspection date</label>
+                      <p></p>
+                      <input type="text" id="certification" name="certification"><br>
+                      <label for="certification">Certification No.</label>
+                      <p></p>
+                      <input type="text" id="blank" name="blank"><br>
+                      <label for="blank">  </label>
+                  </form>
+              </div>
+          </div>
+        </div>
+        </div>
         </div>
         
         <div class="box middle-box">
@@ -70,7 +148,7 @@
                       </div>
                     <div class="middle-group">
                         <label for="runslope-1">Running Slope 1</label>
-                        <input type="text" id="runslope-1" name="runslope-1">
+                        <input type="number" id="runslope-1" name="runslope-1">
                     </div>
                     <div class="middle-group2">
                       <label for="runslope-1-pf">≤2.0% (Pass) &gt;2.0% (Fail)</label>
@@ -81,7 +159,7 @@
                     </div>
                     <div class="middle-group">
                         <label for="cross-slope1">Cross Slope 1</label>
-                        <input type="text" id="cross-slope1" name="cross-slope1">
+                        <input type="number" id="cross-slope1" name="cross-slope1">
                     </div>
                     <div class="middle-group2">
                       <label for="cross-slope1-pf">≤2.0% (Pass) &gt;2.0% (Fail)</label>
@@ -336,86 +414,6 @@
                     </select>
                   </div>
         </div>
-        
-        <div class="box side-box">
-          <div class="vertbox-container">
-            <div class="vertbox">
-                <div class="internal-column-container">
-                <div class="internal-column2">
-                    <form id="dataForm4">
-                        <select id="corner-position" name="corner-position"><br>
-                          <option value=""></option>
-                          <option value="1">1</option>
-                          <option value="1A">1A</option>
-                          <option value="2">2</option>
-                          <option value="2A">2A</option>
-                          <option value="3">3</option>
-                          <option value="3A">3A</option>
-                          <option value="4">4</option>
-                          <option value="4A">4A</option>
-                          <option value="5">5</option>
-                          <option value="5A">5A</option>
-                          <option value="6">6</option>
-                          <option value="6A">6A</option>
-                          <option value="7">7</option>
-                          <option value="7A">7A</option>
-                          <option value="8">8</option>
-                          <option value="8A">8A</option>
-                        </select>
-                        <p></p>
-                        <p></p>
-                        <label for="corner-position">Corner Position</label>
-                        <select id="ramp-position" name="ramp-position"><br>
-                          <option value=""></option>
-                          <option value="1">1</option>
-                          <option value="2">2</option>
-                          <option value="3">3</option>
-                          </select>
-                        <label for="ramp-position">Ramp Position</label>
-                    </form>
-        </div>
-            <div class="internal-column3">
-                <img src="../images/intersection.png">
-            </div>
-        </div>
-            </div>
-            <div class="vertbox">
-                <form id="dataForm5">
-                    <div class="comments-box">
-                        <label for="comments">Comments</label>
-                        <input type="text" id="comments" name="comments"><br>
-                    </div>
-                </form>
-            </div>
-            <div class="vertbox">
-                <div class="internal-column-container">
-                <div class="internal-column3">
-                    <form id="signatures-form">
-                        <input type="text" id="inspector-sig" name="inspector-sig"><br>
-                        <label for="inspector-sig">Inspector's Signature</label>
-                        <p></p>
-                        <input type="text" id="print-name" name="print-name"><br>
-                        <label for="print-name">Print name clearly</label>
-                        <p></p>
-                        <input type="text" id="agency" name="agency"><br>
-                        <label for="agency">Company/Agency</label>
-                    </form>
-                </div>
-                <div class="internal-column2">
-                    <form id="signatures-dates">
-                        <input type="text" id="inspection-date" name="inspection-date"><br>
-                        <label for="inspection-date">Inspection date</label>
-                        <p></p>
-                        <input type="text" id="certification" name="certification"><br>
-                        <label for="certification">Certification No.</label>
-                        <p></p>
-                        <input type="text" id="blank" name="blank"><br>
-                        <label for="blank">  </label>
-                    </form>
-                </div>
-            </div>
-          </div>
-    </div>
 
 <script src="parallel.js"></script>
 <script>
@@ -456,6 +454,17 @@
         link.click();
         document.body.removeChild(link);
     }
+
+    window.addEventListener('message', function(event) {
+            // Validate the origin of the event for security purposes
+            if (event.origin !== window.location.origin) {
+                return;
+            }
+
+            const { nextObjectId } = event.data;
+            const fileNameInput = document.getElementById('fileName');
+            fileNameInput.value = `${nextObjectId}`;
+        });
 </script>
 </body>
 </html>
