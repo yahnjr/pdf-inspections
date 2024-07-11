@@ -100,6 +100,7 @@ img {
 
 .internal-column2 {
     flex: 1;
+    min-width: 0;
 }
 
 .internal-column2 input {
@@ -107,7 +108,8 @@ img {
 }
 
 .internal-column3 {
-    flex: 3
+    flex: 3;
+    min-width: 0;
 }
 
 .internal-column3 input {
