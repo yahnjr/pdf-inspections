@@ -95,7 +95,7 @@ img {
 
   .internal-column-container {
     display:flex;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 .internal-column2 {
