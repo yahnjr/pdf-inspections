@@ -90,6 +90,7 @@
                       <option value="7A">7A</option>
                       <option value="8">8</option>
                       <option value="8A">8A</option>
+                      <option value="midblock">Midblock</option>
                     </select>
                     <p></p>
                     <p></p>
@@ -436,6 +437,10 @@ function downloadXLSX() {
         document.body.removeChild(link);
 
         localStorage.removeItem('formData');
+        
+        inputs.forEach(input => {
+          input.value = input.defaultValue;
+        });
     }
 
     window.addEventListener('message', function(event) {

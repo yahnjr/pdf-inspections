@@ -14,7 +14,7 @@ body, html {
 }
 
 #left {
-  width: 23%;
+  width: 30%;
   height: 100%;
   border-right: 1px solid black;
   display: flex;
@@ -38,7 +38,7 @@ body, html {
 }
 
 #right {
-  width: 77%;
+  width: 70%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -160,150 +160,165 @@ button {
         <option value="unique">Unique</option>
     </select>
 
-    <button id="myBtn">View PDF</button>
-    <button id="mapBtn">View Map</button>
-
-</div>
-    </div>
-
-    </div>
-    <div id="myModal" class="modal">
-    
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <iframe id="pdfDisplay" src="docs/parallel.pdf" style="width:90%; height:90%;"></iframe>
-      </div>
-    
-    </div>
-    <div id="mapModal" class="modal">
-    
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <div id="mapframe"></div>
-      </div>
-    
-    </div>
+    <div>
+      <button id="myBtn">View PDF</button>
+      <button id="mapBtn">View Map</button>
+      <button id="guideBtn">View ADA Guide</button>
   </div>
-
-<script>
-
-window.addEventListener('beforeunload', function (event) {
-            event.preventDefault();
-            event.returnValue = '';
-        });
-
-require([
-  "esri/Map",
-  "esri/views/MapView",
-  "esri/layers/FeatureLayer"
-], function(Map, MapView, FeatureLayer) {
-
-  const popupTemplate = {
-    title: "{OBJECTID}"
-  }
-
-  const featureLayer = new FeatureLayer({
-    url: "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6/FeatureServer/0",
-    popupTemplate: popupTemplate
-  });
-
-  var map = new Map({
-    basemap: "satellite"
-  });
-
-  var view = new MapView({
-    container: "mapframe",
-    map: map,
-    center: [-122.99501995806335, 45.59693760590502], 
-    zoom: 14 
-  });
-
-  map.add(featureLayer);
-
-  featureLayer.queryObjectIds().then(function(ids) {
-    var maxId = Math.max(...ids);
-    var nextObjectId = maxId + 1;
-    console.log(maxId);
-    console.log(nextObjectId);
-    document.getElementById('nextObjectId').innerText = nextObjectId;
-    document.getElementById('maxId').innerText = maxId;
-
-    const iframe = document.getElementById('formIframe');
-    iframe.contentWindow.postMessage({ nextObjectId: nextObjectId }, '*');
-  });
-
-});
-
-function displayPDF() {
-  var pdfSelect = document.getElementById("pdfSelect");
-  var pdfDisplay = document.getElementById("pdfDisplay");
-  var selectedPDF = pdfSelect.value;
   
-  if (selectedPDF) {
-    pdfDisplay.src = selectedPDF;
-  } else {
-    pdfDisplay.src = "";
-  }
-}
-
-function downloadPDF() {
-  var pdfSelect = document.getElementById("pdfSelect");
-  var fileNumber = document.getElementById("fileNumber").value;
-  var selectedPDF = pdfSelect.value;
+  <div id="myModal" class="modal">
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <iframe id="pdfDisplay" src="docs/parallel.pdf" style="width:90%; height:90%;"></iframe>
+      </div>
+  </div>
   
-  if (selectedPDF && fileNumber) {
-    var link = document.createElement('a');
-
-    link.href = selectedPDF;
-
-    link.download = fileNumber + '.pdf';
-
-    document.body.appendChild(link);
-
-    link.click();
-    
-    document.body.removeChild(link);
+  <div id="mapModal" class="modal">
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <div id="mapframe"></div>
+      </div>
+  </div>
+  
+  <div id="guideModal" class="modal">
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <iframe id="guideDisplay" src="docs/ADAInspectorsGuide.pdf" style="width:90%; height:90%;"></iframe>
+      </div>
+  </div>
+  
+  <script>
+  window.addEventListener('beforeunload', function (event) {
+      event.preventDefault();
+      event.returnValue = '';
+  });
+  
+  require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/FeatureLayer"
+  ], function(Map, MapView, FeatureLayer) {
+      const popupTemplate = {
+          title: "{OBJECTID}"
+      }
+  
+      const featureLayer = new FeatureLayer({
+          url: "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6/FeatureServer/0",
+          popupTemplate: popupTemplate
+      });
+  
+      var map = new Map({
+          basemap: "satellite"
+      });
+  
+      var view = new MapView({
+          container: "mapframe",
+          map: map,
+          center: [-122.99501995806335, 45.59693760590502], 
+          zoom: 14 
+      });
+  
+      map.add(featureLayer);
+  
+      featureLayer.queryObjectIds().then(function(ids) {
+          var maxId = Math.max(...ids);
+          var nextObjectId = maxId + 1;
+          console.log(maxId);
+          console.log(nextObjectId);
+          document.getElementById('nextObjectId').innerText = nextObjectId;
+          document.getElementById('maxId').innerText = maxId;
+  
+          const iframe = document.getElementById('formIframe');
+          iframe.contentWindow.postMessage({ nextObjectId: nextObjectId }, '*');
+      });
+  });
+  
+  function displayPDF() {
+      var pdfSelect = document.getElementById("pdfSelect");
+      var pdfDisplay = document.getElementById("pdfDisplay");
+      var selectedPDF = pdfSelect.value;
+  
+      if (selectedPDF) {
+          pdfDisplay.src = selectedPDF;
+      } else {
+          pdfDisplay.src = "";
+      }
   }
-}
-
-// Handle PDF modal
-var pdfModal = document.getElementById("myModal");
-var pdfBtn = document.getElementById("myBtn");
-var pdfClose = pdfModal.getElementsByClassName("close")[0];
-
-pdfBtn.onclick = function() {
-  pdfModal.style.display = "block";
-}
-
-pdfClose.onclick = function() {
-  pdfModal.style.display = "none";
-}
-
-window.onclick = function(event) {
-  if (event.target == pdfModal) {
-    pdfModal.style.display = "none";
+  
+  function downloadPDF() {
+      var pdfSelect = document.getElementById("pdfSelect");
+      var fileNumber = document.getElementById("fileNumber").value;
+      var selectedPDF = pdfSelect.value;
+  
+      if (selectedPDF && fileNumber) {
+          var link = document.createElement('a');
+  
+          link.href = selectedPDF;
+  
+          link.download = fileNumber + '.pdf';
+  
+          document.body.appendChild(link);
+  
+          link.click();
+          
+          document.body.removeChild(link);
+      }
   }
-}
-
-// Handle map modal
-var mapModal = document.getElementById("mapModal");
-var mapBtn = document.getElementById("mapBtn");
-var mapClose = mapModal.getElementsByClassName("close")[0];
-
-mapBtn.onclick = function() {
-  mapModal.style.display = "block";
-
-mapClose.onclick = function() {
-  mapModal.style.display = "none";
-}
-}
-
-window.onclick = function(event) {
-  if (event.target == mapModal) {
-    mapModal.style.display = "none";
+  
+  // Handle PDF modal
+  var pdfModal = document.getElementById("myModal");
+  var pdfBtn = document.getElementById("myBtn");
+  var pdfClose = pdfModal.getElementsByClassName("close")[0];
+  
+  pdfBtn.onclick = function() {
+      pdfModal.style.display = "block";
   }
-}
-</script>
-
-</body>
-</html>
+  
+  pdfClose.onclick = function() {
+      pdfModal.style.display = "none";
+  }
+  
+  window.onclick = function(event) {
+      if (event.target == pdfModal) {
+          pdfModal.style.display = "none";
+      }
+  }
+  
+  // Handle map modal
+  var mapModal = document.getElementById("mapModal");
+  var mapBtn = document.getElementById("mapBtn");
+  var mapClose = mapModal.getElementsByClassName("close")[0];
+  
+  mapBtn.onclick = function() {
+      mapModal.style.display = "block";
+  }
+  
+  mapClose.onclick = function() {
+      mapModal.style.display = "none";
+  }
+  
+  window.onclick = function(event) {
+      if (event.target == mapModal) {
+          mapModal.style.display = "none";
+      }
+  }
+  
+  // Handle guide modal
+  var guideModal = document.getElementById("guideModal");
+  var guideBtn = document.getElementById("guideBtn");
+  var guideClose = guideModal.getElementsByClassName("close")[0];
+  
+  guideBtn.onclick = function() {
+      guideModal.style.display = "block";
+  }
+  
+  guideClose.onclick = function() {
+      guideModal.style.display = "none";
+  }
+  
+  window.onclick = function(event) {
+      if (event.target == guideModal) {
+          guideModal.style.display = "none";
+      }
+  }
+  </script>
