@@ -85,6 +85,11 @@ img {
     background-color: #ebebeb;
   }
 
+  .inline-img {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
   .middle-group input, .middle-group2 input {
     height: 30px;
   }
