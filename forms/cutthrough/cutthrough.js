@@ -23,8 +23,7 @@ function restoreData() {
     }
 }
 
-// Call autoSave function every 5 seconds
-setInterval(autoSave, 5000);
+setInterval(autoSave, 500);
 
 // Restore data on page load
 window.addEventListener('load', restoreData);

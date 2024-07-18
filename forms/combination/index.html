@@ -137,12 +137,12 @@
         </div>
         <div class="vertbox">
             <div class="internal-column-container">
-            <div class="internal-column3">
+              <div class="internal-column3">
                 <form id="signatures-form">
                     <input type="text" id="inspector-sig" name="inspector-sig"><br>
                     <label for="inspector-sig">Inspector's Signature</label>
                     <p></p>
-                    <input type="text" id="print-name" name="print-name"><br>
+                    <input type="text" id="print-name" name="print-name" value="Darrell Wyant"><br>
                     <label for="print-name">Print name clearly</label>
                     <p></p>
                     <input type="text" id="agency" name="agency" value="3J Consulting"><br>
@@ -154,7 +154,7 @@
                     <input type="date" id="inspection-date" name="inspection-date"><br>
                     <label for="inspection-date">Inspection date</label>
                     <p></p>
-                    <input type="text" id="certification" name="certification"><br>
+                    <input type="text" id="certification" name="certification" value="52638"><br>
                     <label for="certification">Certification No.</label>
                     <p></p>
                     <input type="text" id="blank" name="blank"><br>
@@ -162,6 +162,7 @@
                 </form>
             </div>
         </div>
+        <button type="button" onclick="resetForm()">resetForm</button>
       </div>
       </div>
       </div>
@@ -559,6 +560,14 @@ document.getElementById('curb-avg-button').addEventListener('click', function() 
     // Output the average to the input element
     document.getElementById('curb-slope').value = average;
 });
+
+function resetForm() {
+  const inputs = document.querySelectorAll('input[type="text"], input[type="number"], select');
+  
+  inputs.forEach(input => {
+          input.value = input.defaultValue;
+        });
+}
 </script>
 </body>
 </html>
