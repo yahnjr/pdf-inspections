@@ -30,7 +30,7 @@
                 <label for="ns-road">North-South Road Name</label>
             </div>
             <div class="header-group">
-                <input type="text" id="proj-num" name="proj-num" value="23885.56">
+                <input type="text" id="proj-num" name="proj-num" value="24952.54">
                 <label for="proj-num">Project No.</label>
             </div>
             <div class="header-group">
@@ -495,12 +495,14 @@ document.getElementById('curb-avg-button').addEventListener('click', function() 
 });
 
 function resetForm() {
-  const inputs = document.querySelectorAll('input[type="text"], input[type="number"], select');
-  
-  inputs.forEach(input => {
-          input.value = input.defaultValue;
-        });
-}
+    if (confirm('Are you sure you would like to reset the form?')) {
+      const inputs = document.querySelectorAll('input[type="text"], input[type="number"], select');
+      
+      inputs.forEach(input => {
+        input.value = input.defaultValue;
+      });
+    }
+  }
 </script>
 </body>
 </html>

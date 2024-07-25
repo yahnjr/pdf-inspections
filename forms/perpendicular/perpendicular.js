@@ -119,7 +119,15 @@ window.addEventListener('DOMContentLoaded', (event) => {
     addEventListeners('runslope-3', 'runslope-3-pf', 8.3);
     addEventListeners('widthx', 'widthx-pf', 4, null, 'lower');
     addEventListeners('lengthy', 'lengthy-pf', 4, null, 'lower');
-    addEventListeners('clearwidth', 'clearwidth-pf', 4, null, 'lower');
+    addEventListeners('clear-width', 'clearwidth-pf', 4, null, 'lower');
+    addEventListeners('slopex', 'slopex-pf', 2);
+    addEventListeners('slopey', 'slopey-pf', 2);
+    addEventListeners('flare-slope1', 'flare-slope1-pf', 10);
+    addEventListeners('flare-slope2', 'flare-slope2-pf', 10);
     addEventListeners('curb-slope', 'curb-slope-pf', 8.3);
     addEventListeners('counter-slope', 'counter-slope-pf', 5);
+
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('cal-date').value = today;
+    document.getElementById('inspection-dat').value = today;
 });
