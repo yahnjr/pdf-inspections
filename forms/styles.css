@@ -115,6 +115,7 @@ img {
 .internal-column3 {
     flex: 3;
     min-width: 0;
+    max-width: fit-content;
 }
 
 .internal-column3 input {
