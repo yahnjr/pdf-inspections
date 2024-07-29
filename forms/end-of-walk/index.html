@@ -406,14 +406,14 @@ function downloadXLSX() {
         const data = [];
 
         // Collect headers
-        const headers = [];
+        const headers = ['type'];
         inputs.forEach(input => {
             headers.push(input.name);
         });
         data.push(headers);
 
         // Collect values
-        const values = [];
+        const values = ['end-of-walk'];
         inputs.forEach(input => {
             values.push(input.value);
         });
