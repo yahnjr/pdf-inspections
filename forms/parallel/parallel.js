@@ -130,29 +130,3 @@ window.addEventListener('DOMContentLoaded', (event) => {
     document.getElementById('inspection-dat').value = today;
 });
 
-document.getElementById('photoButton1').addEventListener('click', function() {
-    document.getElementById('fileInput1').click();
-});
-
-document.getElementById('photoButton2').addEventListener('click', function() {
-    document.getElementById('fileInput2').click();
-});
-
-document.getElementById('photoButton3').addEventListener('click', function() {
-    document.getElementById('fileInput3').click();
-});
-
-document.getElementById('fileInput1').addEventListener('change', function() {
-    const fileName = this.files[0].name;
-    document.getElementById('fileName1').textContent = fileName;
-});
-
-document.getElementById('fileInput2').addEventListener('change', function() {
-    const fileName = this.files[0].name;
-    document.getElementById('fileName2').textContent = fileName;
-});
-
-document.getElementById('fileInput3').addEventListener('change', function() {
-    const fileName = this.files[0].name;
-    document.getElementById('fileName3').textContent = fileName;
-});
