@@ -128,7 +128,7 @@ for file_name in os.listdir(output_folder):
 combined_df = pd.concat(dataframes, ignore_index=True, sort=False)
 
 # Save the combined DataFrame to a new Excel file
-combined_output_path = r"C:\python\scripts\pdfeditor2\processing\combined_output.xlsx"
+combined_output_path = r"C:\python\scripts\pdfeditor2\processing\combined_output1.xlsx"
 combined_df.to_excel(combined_output_path, index=False)
 
 print(f"All tables have been combined and saved to {combined_output_path}")
@@ -139,7 +139,7 @@ field_names_df = [name.replace("-", "_") for name in combined_df.columns.tolist(
 
 print(field_names_df)
 
-df = pd.read_csv(r"C:\python\scripts\pdfeditor2\processing\combined_output.csv")
+df = pd.read_csv(r"C:\python\scripts\pdfeditor2\processing\combined_output1.csv")
 remove_vowels = lambda text: "".join(
     char for char in text if char.lower() not in "aeiou"
 )
@@ -154,7 +154,7 @@ def remove_vowels(text):
 
 
 # Read the CSV file into a Pandas DataFrame
-df = pd.read_csv(r"C:\python\scripts\pdfeditor2\processing\combined_output.csv")
+df = pd.read_csv(r"C:\python\scripts\pdfeditor2\processing\combined_output1.csv")
 
 # Get the original field names
 original_field_names = list(df.columns)
@@ -168,7 +168,7 @@ field_names = [
 df.columns = field_names
 
 # Optionally, write the modified DataFrame to a new CSV file
-df.to_csv(r"C:\python\scripts\pdfeditor2\processing\combined_output.csv", index=False)
+df.to_csv(r"C:\python\scripts\pdfeditor2\processing\combined_output1.csv", index=False)
 ###Fill out Pdfs
 
 
@@ -268,20 +268,30 @@ process_csv(csv_path, lookup_path, output_folder)
 
 ###Previous pdf fill-out functions
 
+from pdfrw import PdfReader, PdfWriter, PdfDict, PdfName, PdfString
 import pandas as pd
-from pdfrw import PdfReader, PdfWriter, PdfDict, PdfName
-import os
-from pdfrw.objects.pdfstring import PdfString
 
 
 def format_choice_value(value):
-    """Format the value to match the PDF's expected format."""
-    if isinstance(value, str):
-        return f"'{value.upper()}'"
-    elif isinstance(value, float):
-        return f"'{int(value)}'"
-    else:
-        return f"'{value}'"
+    """Format the value for comparison with list box options."""
+    return str(value).strip().lower()
+
+
+def combobox(annotation, value):
+    export = None
+    formatted_value = format_choice_value(value)
+    for each in annotation["/Opt"]:
+        if isinstance(each, list) and len(each) > 1:
+            if format_choice_value(each[1].to_unicode()) == formatted_value:
+                export = each[0].to_unicode()
+        elif isinstance(each, PdfString):
+            if format_choice_value(each.to_unicode()) == formatted_value:
+                export = each.to_unicode()
+    if export is None:
+        print(f"Warning: Export Value for '{value}' Not Found. Using the value as is.")
+        export = value
+    pdfstr = PdfString.encode(export)
+    annotation.update(PdfDict(V=pdfstr, AS=pdfstr))
 
 
 def fill_pdf_form(pdf_template_path, data, lookup, output_path):
@@ -289,7 +299,7 @@ def fill_pdf_form(pdf_template_path, data, lookup, output_path):
     fields_updated = False
 
     print("\nProcessing PDF fields:")
-    for page_num, page in enumerate(template_pdf.pages, 1):
+    for page in template_pdf.pages:
         annotations = page.get("/Annots")
         if annotations:
             for annotation in annotations:
@@ -311,27 +321,39 @@ def fill_pdf_form(pdf_template_path, data, lookup, output_path):
                             if data_field_name in data and pd.notna(
                                 data[data_field_name]
                             ):
-                                field_value = str(data[data_field_name]).lower()
+                                field_value = str(data[data_field_name])
 
-                                if field_type == "/Tx":  # Text field
+                                if field_type == PdfName("Tx"):  # Text field
                                     annotation.update(
-                                        PdfDict(V=str(data[data_field_name]), AP=None)
+                                        PdfDict(V=field_value, AP=PdfDict())
                                     )
                                     fields_updated = True
-                                    print(
-                                        f"  Text value filled: {data[data_field_name]}"
-                                    )
+                                    print(f"  Text value filled: {field_value}")
 
-                                elif field_type == "/Btn":  # Checkbox
+                                elif field_type == PdfName(
+                                    "Ch"
+                                ):  # Choice field (combobox/dropdown)
+                                    try:
+                                        combobox(annotation, field_value)
+                                        fields_updated = True
+                                        print(
+                                            f"  Combobox value selected: {field_value}"
+                                        )
+                                    except Exception as e:
+                                        print(
+                                            f"  Error setting combobox value: {str(e)}"
+                                        )
+
+                                elif field_type == PdfName("Btn"):  # Checkbox
                                     if field_name.endswith(
                                         "_PASS"
                                     ) or field_name.endswith("_FAIL"):
                                         if (
                                             field_name.endswith("_PASS")
-                                            and field_value == "pass"
+                                            and field_value.lower() == "pass"
                                         ) or (
                                             field_name.endswith("_FAIL")
-                                            and field_value == "fail"
+                                            and field_value.lower() == "fail"
                                         ):
                                             annotation.update(
                                                 PdfDict(
@@ -353,57 +375,6 @@ def fill_pdf_form(pdf_template_path, data, lookup, output_path):
                                         print(
                                             f"  Checkbox field doesn't end with _PASS or _FAIL: {field_name}"
                                         )
-
-                                elif (
-                                    field_type == "/Ch"
-                                ):  # Choice field (dropdown or list box)
-                                    options = annotation.get("/Opt")
-                                    formatted_value = format_choice_value(field_value)
-
-                                    # Flatten the options and convert to a set of strings, handling nested options
-                                    flat_options = set()
-                                    for opt in options:
-                                        if isinstance(opt, PdfString):
-                                            flat_options.add(opt.decode())
-                                        elif isinstance(opt, list):
-                                            for sub_opt in opt:
-                                                if isinstance(sub_opt, PdfString):
-                                                    flat_options.add(sub_opt.decode())
-
-                                    # Remove quotes and convert to lowercase for case-insensitive comparison
-                                    formatted_value_lower = formatted_value.strip(
-                                        "'"
-                                    ).lower()
-
-                                    if formatted_value_lower in (
-                                        option.lower() for option in flat_options
-                                    ):
-                                        annotation.update(
-                                            PdfDict(V=formatted_value, AP=None)
-                                        )
-                                        fields_updated = True
-                                        print(
-                                            f"  Choice field value selected: {formatted_value}"
-                                        )
-                                    else:
-                                        print(
-                                            f"  Invalid choice for field: {field_value}"
-                                        )
-                                        print(
-                                            f"  Formatted value (without quotes) not found in options."
-                                        )
-                                        print(f"  Flat options: {flat_options}")
-
-                                    # Additional debugging information
-                                    print(
-                                        f"  Type of formatted_value: {type(formatted_value)}"
-                                    )
-                                    print(
-                                        f"  Type of formatted_value_no_quotes: {type(formatted_value_lower)}"
-                                    )
-                                    print(
-                                        f"  Type of first option: {type(next(iter(flat_options))) if flat_options else 'N/A'}"
-                                    )
 
                                 else:
                                     print(f"  Unsupported field type: {field_type}")

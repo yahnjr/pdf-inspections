@@ -137,6 +137,23 @@
           </div>
           <button type="button" onclick="resetForm()">resetForm</button>
         </div>
+        <div>
+          <button id="photoButton1">Choose Photo 1</button>
+          <input type="file" id="fileInput1" class="file-input" accept="image/*">
+          <span id="fileName1"></span>
+        </div>
+        <br>
+        <div>
+          <button id="photoButton2">Choose Photo 2</button>
+          <input type="file" id="fileInput2" class="file-input" accept="image/*">
+          <span id="fileName2"></span>
+        </div>
+        <br>
+        <div>
+          <button id="photoButton3">Choose Photo 3</button>
+          <input type="file" id="fileInput3" class="file-input" accept="image/*">
+          <span id="fileName3"></span>
+        </div>
         </div>
         </div>
         
@@ -420,48 +437,58 @@
 <script src="parallel.js"></script>
 <script>
 
-    function downloadXLSX() {
-        const inputs = document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], select');
-        const data = [];
+function downloadXLSX() {
+    const inputs = document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], select');
+    const data = [];
 
-        // Collect headers
-        const headers = ['type'];
-        inputs.forEach(input => {
-            headers.push(input.name);
-        });
-        data.push(headers);
+    // Collect headers
+    const headers = ['type'];
+    inputs.forEach(input => {
+        headers.push(input.name);
+    });
+    headers.push('Photo 1', 'Photo 2', 'Photo 3'); // Add headers for photos
+    data.push(headers);
 
-        // Collect values
-        const values = ['parallel'];
-        inputs.forEach(input => {
-            values.push(input.value);
-        });
-        data.push(values);
+    // Collect values
+    const values = ['parallel'];
+    inputs.forEach(input => {
+        values.push(input.value);
+    });
+    values.push(
+        document.getElementById('fileName1').textContent,
+        document.getElementById('fileName2').textContent,
+        document.getElementById('fileName3').textContent
+    ); // Add photo file names
+    data.push(values);
 
-        // Convert data to worksheet and then to XLSX
-        const worksheet = XLSX.utils.aoa_to_sheet(data);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-        const xlsxData = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-        const blob = new Blob([xlsxData], { type: 'application/octet-stream' });
+    // Convert data to worksheet and then to XLSX
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    const xlsxData = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([xlsxData], { type: 'application/octet-stream' });
 
-        // Get file name from input
-        const fileName = document.getElementById('fileName').value || 'data';
+    // Get file name from input
+    const fileName = document.getElementById('fileName').value || 'data';
 
-        // Create download link
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `${fileName}.xlsx`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    // Create download link
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${fileName}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-        localStorage.removeItem('formData');
+    localStorage.removeItem('formData');
 
-        inputs.forEach(input => {
-          input.value = input.defaultValue;
-        });
-    }
+    inputs.forEach(input => {
+        input.value = input.defaultValue;
+    });
+
+    document.getElementById('fileName1').textContent = 'No file chosen';
+    document.getElementById('fileName2').textContent = 'No file chosen';
+    document.getElementById('fileName3').textContent = 'No file chosen';
+}
 
     window.addEventListener('message', function(event) {
             // Validate the origin of the event for security purposes
@@ -501,6 +528,10 @@ function resetForm() {
       inputs.forEach(input => {
         input.value = input.defaultValue;
       });
+
+      document.getElementById('fileName1').textContent = 'No file chosen';
+      document.getElementById('fileName2').textContent = 'No file chosen';
+      document.getElementById('fileName3').textContent = 'No file chosen';
     }
   }
 </script>
