@@ -2,15 +2,13 @@ function downloadXLSX() {
     const inputs = document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], select');
     const data = [];
 
-    // Collect headers
     const headers = ['type'];
     inputs.forEach(input => {
         headers.push(input.name);
     });
-    headers.push('Photo 1', 'Photo 2', 'Photo 3'); // Add headers for photos
+    headers.push('Photo 1', 'Photo 2', 'Photo 3'); 
     data.push(headers);
 
-    // Collect values
     const values = ['parallel'];
     inputs.forEach(input => {
         values.push(input.value);
@@ -19,7 +17,7 @@ function downloadXLSX() {
         document.getElementById('fileName1').textContent,
         document.getElementById('fileName2').textContent,
         document.getElementById('fileName3').textContent
-    ); // Add photo file names
+    );
     data.push(values);
 
     // Convert data to worksheet and then to XLSX
@@ -29,10 +27,8 @@ function downloadXLSX() {
     const xlsxData = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([xlsxData], { type: 'application/octet-stream' });
 
-    // Get file name from input
     const fileName = document.getElementById('fileName').value || 'data';
 
-    // Create download link
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = `${fileName}.xlsx`;
@@ -52,7 +48,6 @@ function downloadXLSX() {
 }
 
     window.addEventListener('message', function(event) {
-            // Validate the origin of the event for security purposes
             if (event.origin !== window.location.origin) {
                 return;
             }
@@ -121,4 +116,39 @@ document.getElementById('fileInput2').addEventListener('change', function() {
 document.getElementById('fileInput3').addEventListener('change', function() {
     const fileName = this.files[0].name;
     document.getElementById('fileName3').textContent = fileName;
+});
+
+// Create autosave file, cleared when downloading or hitting reset button
+function autoSave() {
+    const inputs = document.querySelectorAll('input[type="text"], input[type="number"], select');
+    const formData = {};
+
+    inputs.forEach(input => {
+        formData[input.name] = input.value;
+    });
+
+    localStorage.setItem('formData', JSON.stringify(formData));
+}
+
+function restoreData() {
+    const savedData = localStorage.getItem('formData');
+    if (savedData) {
+        const formData = JSON.parse(savedData);
+        Object.keys(formData).forEach(key => {
+            const input = document.querySelector(`[name="${key}"]`);
+            if (input) {
+                input.value = formData[key];
+            }
+        });
+    }
+}
+
+setInterval(autoSave, 500);
+
+window.addEventListener('load', restoreData);
+
+// Confirm before leaving the page
+window.addEventListener('beforeunload', function (event) {
+    event.preventDefault();
+    event.returnValue = '';
 });

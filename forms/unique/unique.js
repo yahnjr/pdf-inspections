@@ -1,3 +1,4 @@
+// Create autosave file, cleared when downloading or hitting reset button
 function autoSave() {
     const inputs = document.querySelectorAll('input[type="text"], input[type="number"], select');
     const formData = {};
@@ -9,7 +10,6 @@ function autoSave() {
     localStorage.setItem('formData', JSON.stringify(formData));
 }
 
-// Restore form data from localStorage
 function restoreData() {
     const savedData = localStorage.getItem('formData');
     if (savedData) {
@@ -23,10 +23,8 @@ function restoreData() {
     }
 }
 
-// Call autoSave function every 5 seconds
 setInterval(autoSave, 500);
 
-// Restore data on page load
 window.addEventListener('load', restoreData);
 
 // Confirm before leaving the page
