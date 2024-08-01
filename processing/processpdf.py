@@ -48,9 +48,14 @@ from arcgis.gis import GIS
 from arcgis.features import FeatureLayer
 import os
 import pandas as pd
+import getpass
+
+username = input("Enter your ArcGIS Online username: ")
+
+password = getpass.getpass("Enter your ArcGIS Online password: ")
 
 # Authenticate with ArcGIS Online
-gis = GIS("https://3j.maps.arcgis.com", "ian.maher_3j", "Hor5135br0ago!")
+gis = GIS("https://3j.maps.arcgis.com", profile="ian.maher_3j")
 
 # Access the feature layer
 feature_layer_url = "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6_results/FeatureServer/0"
