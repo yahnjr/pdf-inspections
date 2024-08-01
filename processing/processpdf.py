@@ -55,8 +55,12 @@ username = input("Enter your ArcGIS Online username: ")
 password = getpass.getpass("Enter your ArcGIS Online password: ")
 
 # Authenticate with ArcGIS Online
+<<<<<<< HEAD
 gis = GIS("https://3j.maps.arcgis.com", profile="ian.maher_3j")
 
+=======
+gis = GIS(*************)
+>>>>>>> c2db7f225082d42b8b9b17c85452960e1a7498c4
 # Access the feature layer
 feature_layer_url = "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6_results/FeatureServer/0"
 layer = FeatureLayer(feature_layer_url)
