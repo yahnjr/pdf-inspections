@@ -49,18 +49,15 @@ from arcgis.features import FeatureLayer
 import os
 import pandas as pd
 import getpass
+import shutil
 
 username = input("Enter your ArcGIS Online username: ")
 
 password = getpass.getpass("Enter your ArcGIS Online password: ")
 
 # Authenticate with ArcGIS Online
-<<<<<<< HEAD
-gis = GIS("https://3j.maps.arcgis.com", profile="ian.maher_3j")
+gis = GIS("https://3j.maps.arcgis.com", username, password)
 
-=======
-gis = GIS(*************)
->>>>>>> c2db7f225082d42b8b9b17c85452960e1a7498c4
 # Access the feature layer
 feature_layer_url = "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6_results/FeatureServer/0"
 layer = FeatureLayer(feature_layer_url)
@@ -96,20 +93,58 @@ if features:
 else:
     print("No features found in the layer.")
 
-# Download the allowed attachments
+allowed_extensions = [".jpg", ".jpeg"]
+
+# Attempting re-run with images
 if features:
     for feature in features:
         feature_id = feature.attributes[object_id_field]
         attachments = layer.attachments.get_list(feature_id)
-        for attachment in attachments:
-            attachment_name = attachment["name"]
-            attachment_extension = os.path.splitext(attachment_name)[1].lower()
-            if attachment_extension in allowed_extensions:
-                attachment_id = attachment["id"]
-                attachment_url = layer.attachments.download(
-                    feature_id, attachment_id, save_path=output_folder
-                )
-                print(f"Downloaded {attachment_name} for feature {feature_id}")
+        if attachments:
+            print(f"Feature {feature_id} has the following attachments:")
+            for attachment in attachments:
+                attachment_name = attachment["name"]
+                attachment_extension = os.path.splitext(attachment_name)[1].lower()
+                if attachment_extension in allowed_extensions:
+                    print(f"  - {attachment_name} (ID: {attachment['id']})")
+else:
+    print("No features found in the layer.")
+
+# Download the allowed attachments
+if features:
+    for feature in features:
+        try:
+            feature_id = feature.attributes[object_id_field]
+            attachments = layer.attachments.get_list(feature_id)
+            
+            if feature_id > 124:
+                for attachment in attachments:
+                    attachment_name = attachment["name"]
+                    attachment_extension = os.path.splitext(attachment_name)[1].lower()
+                    
+                    if attachment_extension in allowed_extensions:
+                        attachment_id = attachment["id"]
+                        final_output = f"C:\\python\\scripts\\pdfeditor2\\processing\\downloads\\attachments\\{feature_id}-{attachment_id}{attachment_extension}"
+                        temp_output = f"C:\\python\\scripts\\pdfeditor2\\processing\\downloads\\attachments\\temp"
+
+                        # Debug: Print before download
+                        print(f"Attempting to download attachment {attachment_id} for feature {feature_id}")
+
+                        # Download attachment
+                        attachment_url = layer.attachments.download(
+                            feature_id, attachment_id, save_path=temp_output
+                        )
+
+                        # Debug: Check if download succeeded
+                        if os.path.exists(temp_output):
+                            print(f"Downloaded attachment {attachment_id} to {temp_output}")
+                            os.rename(os.path.join(temp_output, attachment_name), f"{feature_id}-{attachment_id}{attachment_extension}")
+                            print(f"Saved as {feature_id}-{attachment_id}{attachment_extension}")
+                        else:
+                            print(f"Failed to download or locate the file at {temp_output}")
+
+        except Exception as e:
+            print(f"Error processing feature {feature_id}: {e}")
 else:
     print("No features found in the layer.")
 

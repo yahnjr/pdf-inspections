@@ -1,61 +1,12 @@
-function downloadXLSX() {
-    const inputs = document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], select');
-    const data = [];
+window.addEventListener('message', function(event) {
+        if (event.origin !== window.location.origin) {
+            return;
+        }
 
-    const headers = ['type'];
-    inputs.forEach(input => {
-        headers.push(input.name);
+        const { nextObjectId } = event.data;
+        const fileNameInput = document.getElementById('fileName');
+        fileNameInput.value = `${nextObjectId}`;
     });
-    headers.push('Photo 1', 'Photo 2', 'Photo 3'); 
-    data.push(headers);
-
-    const values = ['parallel'];
-    inputs.forEach(input => {
-        values.push(input.value);
-    });
-    values.push(
-        document.getElementById('fileName1').textContent,
-        document.getElementById('fileName2').textContent,
-        document.getElementById('fileName3').textContent
-    );
-    data.push(values);
-
-    // Convert data to worksheet and then to XLSX
-    const worksheet = XLSX.utils.aoa_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-    const xlsxData = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([xlsxData], { type: 'application/octet-stream' });
-
-    const fileName = document.getElementById('fileName').value || 'data';
-
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `${fileName}.xlsx`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    localStorage.removeItem('formData');
-
-    inputs.forEach(input => {
-        input.value = input.defaultValue;
-    });
-
-    document.getElementById('fileName1').textContent = 'No file chosen';
-    document.getElementById('fileName2').textContent = 'No file chosen';
-    document.getElementById('fileName3').textContent = 'No file chosen';
-}
-
-    window.addEventListener('message', function(event) {
-            if (event.origin !== window.location.origin) {
-                return;
-            }
-
-            const { nextObjectId } = event.data;
-            const fileNameInput = document.getElementById('fileName');
-            fileNameInput.value = `${nextObjectId}`;
-        });
 
 document.getElementById('curb-avg-button').addEventListener('click', function() {
     // Prompt the user for 5 numbers

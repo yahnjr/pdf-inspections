@@ -1,5 +1,6 @@
 import requests
 import os
+import getpass 
 
 # ArcGIS Online credentials
 username = input("Enter your ArcGIS Online username: ")
@@ -9,7 +10,7 @@ password = getpass.getpass("Enter your ArcGIS Online password: ")
 layer_url = "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6_results/FeatureServer/0"
 
 # Specify directory to store attachments
-output_dir = "attachments"
+output_dir = r"C:\python\scripts\pdfeditor2\processing\downloads\attachments"
 
 # Generate token
 token_url = "https://www.arcgis.com/sharing/rest/generateToken"
@@ -47,26 +48,29 @@ for feature in features:
     attachments = attachments_response.json()["attachmentInfos"]
 
     # Download each attachment
-    for attachment in attachments:
-        attachment_id = attachment["id"]
+    if object_id > 124:
+        for attachment in attachments:
+            attachment_id = attachment["id"]
 
-        # Construct the attachment URL
-        attachment_url = f"{layer_url}/{object_id}/attachments/{attachment_id}"
-        attachment_params = {"token": token}
+            # Construct the attachment URL
+            attachment_url = f"{layer_url}/{object_id}/attachments/{attachment_id}"
+            attachment_params = {"token": token}
 
-        # Send a request to download the attachment
-        response = requests.get(attachment_url, params=attachment_params)
+            # Send a request to download the attachment
+            response = requests.get(attachment_url, params=attachment_params)
 
-        if response.status_code == 200:
-            # Save the attachment using its ID as the filename
-            file_path = os.path.join(output_dir, f"{attachment_id}.jpg")
-            with open(file_path, "wb") as file:
-                file.write(response.content)
-            print(f"Downloaded attachment {attachment_id} for feature {object_id}")
-        else:
-            print(
-                f"Failed to download attachment {attachment_id} for feature {object_id}"
-            )
+            if response.status_code == 200:
+                # Save the attachment using its ID as the filename
+                file_path = os.path.join(output_dir, f"{attachment_id}.jpg")
+                with open(file_path, "wb") as file:
+                    file.write(response.content)
+                print(f"Downloaded attachment {attachment_id} for feature {object_id}")
+            else:
+                print(
+                    f"Failed to download attachment {attachment_id} for feature {object_id}"
+                )
+    else:
+        print(f"skipping feature {object_id}")
 
 print("Attachment download complete.")
 
