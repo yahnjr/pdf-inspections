@@ -77,7 +77,10 @@ def fill_pdf_form(pdf_template_path, data, lookup, output_path):
 
                                 elif field_type == PdfName("Btn"):  # Checkbox
                                     if field_name.endswith("_PASS"):
-                                        if field_value.lower() == "pass":
+                                        if (
+                                            field_value.lower() == "pass"
+                                            or field_value.lower() == "y"
+                                        ):
                                             annotation.update(
                                                 PdfDict(
                                                     AS=PdfName("Yes"), V=PdfName("Yes")
@@ -87,21 +90,34 @@ def fill_pdf_form(pdf_template_path, data, lookup, output_path):
                                             print(f"  Checkbox selected: {field_name}")
                                         else:
                                             # Automatically find and fill the corresponding _FAIL field
-                                            fail_field_name = field_name.replace("_PASS", "_FAIL")
-                                            print(f"  Looking for corresponding fail field: {fail_field_name}")
+                                            fail_field_name = field_name.replace(
+                                                "_PASS", "_FAIL"
+                                            )
+                                            print(
+                                                f"  Looking for corresponding fail field: {fail_field_name}"
+                                            )
                                             for fail_annotation in annotations:
                                                 fail_field = fail_annotation.get("/T")
-                                                if fail_field and fail_field_name in str(fail_field):
+                                                if (
+                                                    fail_field
+                                                    and fail_field_name
+                                                    in str(fail_field)
+                                                ):
                                                     fail_annotation.update(
                                                         PdfDict(
-                                                            AS=PdfName("Yes"), V=PdfName("Yes")
+                                                            AS=PdfName("Yes"),
+                                                            V=PdfName("Yes"),
                                                         )
                                                     )
                                                     fields_updated = True
-                                                    print(f"  Checkbox selected for fail: {fail_field_name}")
+                                                    print(
+                                                        f"  Checkbox selected for fail: {fail_field_name}"
+                                                    )
                                                     break
                                             else:
-                                                print(f"  Corresponding fail field not found for: {fail_field_name}")
+                                                print(
+                                                    f"  Corresponding fail field not found for: {fail_field_name}"
+                                                )
 
                                     elif field_name.endswith("TRVRSBLE"):
                                         if field_value == "Y":
@@ -111,7 +127,69 @@ def fill_pdf_form(pdf_template_path, data, lookup, output_path):
                                                 )
                                             )
                                             fields_updated = True
-                                            print(f"   Checkbox selected: {field_name}")                                    
+                                            print(f"   Checkbox selected: {field_name}")
+                                    elif field_name.endswith("_PRSNT"):
+                                        if field_value.lower() == "none":
+                                            annotation.update(
+                                                PdfDict(
+                                                    AS=PdfName("Yes"), V=PdfName("Yes")
+                                                )
+                                            )
+                                            fields_updated = True
+                                            print(f"   Checkbox selected: {field_name}")
+                                        elif field_value.lower() == "turn-space":
+                                            turn_space_field = "TURN_SPACE_PRSNT"
+                                            for turn_space_annotation in annotations:
+                                                turn_space = turn_space_annotation.get(
+                                                    "/T"
+                                                )
+                                                if (
+                                                    turn_space
+                                                    and turn_space_field
+                                                    == str(turn_space)
+                                                ):
+                                                    turn_space_annotation.update(
+                                                        PdfDict(
+                                                            AS=PdfName("Yes"),
+                                                            V=PdfName("Yes"),
+                                                        )
+                                                    )
+                                                    fields_updated = True
+                                                    print(
+                                                        f"Turn space selected for {turn_space_field}"
+                                                    )
+                                                    break
+                                            else:
+                                                print(
+                                                    f"Failed to find turn space field: {turn_space_field}"
+                                                )
+                                        elif field_value.lower() == "landing":
+                                            landing_field = "LANDING_PRSNT"
+                                            for landing_annotation in annotations:
+                                                landing = landing_annotation.get("/T")
+                                                if landing and landing_field == str(
+                                                    landing
+                                                ):
+                                                    landing_annotation.update(
+                                                        PdfDict(
+                                                            AS=PdfName("Yes"),
+                                                            V=PdfName("Yes"),
+                                                        )
+                                                    )
+                                                    fields_updated = True
+                                                    print(
+                                                        f"Landing selected for {landing_field}"
+                                                    )
+                                                    break
+                                            else:
+                                                print(
+                                                    f"Failed to find landing field: {landing_field}"
+                                                )
+
+                                        else:
+                                            print(
+                                                f"Error finding value for {field_name}"
+                                            )
                                     else:
                                         print(
                                             f"  Checkbox field doesn't match with existing protocols: {field_name}"
@@ -147,8 +225,10 @@ lookup_df = lookup_df.dropna(subset=["pdfField"])
 lookup_dict = pd.Series(lookup_df.csvField.values, index=lookup_df.pdfField).to_dict()
 
 print(lookup_dict)
+
+
 # Process each row in the combined CSV file
-def process_csv_rows(data_df, output_folder):    
+def process_csv_rows(data_df, output_folder):
     for index, row in data_df.iterrows():
         ramp_type = row["type"]
         file_name = row["fileName"]
@@ -174,6 +254,7 @@ def process_csv_rows(data_df, output_folder):
         print(f"Now processing {file_name}")
         fill_pdf_form(pdf_template_path, row, lookup_dict, output_path)
 
+
 process_csv_rows(data_df, output_folder)
 print(f"All rows in {combined_csv_path} processed and saved in {output_folder}")
 
@@ -185,7 +266,7 @@ def process_specific_row(data_df, output_folder, row_index):
     except IndexError:
         print(f"Error: Row index {row_index} is out of bounds.")
         return
-    
+
     ramp_type = row["type"]
     file_name = row["fileName"]
 
@@ -209,5 +290,6 @@ def process_specific_row(data_df, output_folder, row_index):
     # Fill the PDF form with the current row data
     print(f"Now processing row {row_index} with fileName '{file_name}'")
     fill_pdf_form(pdf_template_path, row, lookup_dict, output_path)
+
 
 process_specific_row(data_df, output_folder, 132)

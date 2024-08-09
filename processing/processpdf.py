@@ -6,18 +6,19 @@ def list_pdf_fields(pdf_path):
     # Open the PDF file
     with open(pdf_path, "rb") as pdf_file:
         # Initialize the PdfFileReader object
-        pdf_reader = PyPDF2.PdfFileReader(pdf_file)
+        pdf_reader = PyPDF2.PdfReader(pdf_file)
 
         # Check if the PDF has form fields
-        if pdf_reader.getNumPages() > 0 and "/AcroForm" in pdf_reader.trailer["/Root"]:
+        if len(pdf_reader.pages) > 0 and "/AcroForm" in pdf_reader.trailer["/Root"]:
             form = pdf_reader.trailer["/Root"]["/AcroForm"]
             fields = form["/Fields"]
 
             # Iterate through the form fields
             for field in fields:
-                field_obj = field.getObject()
+                field_obj = field.get_object()
                 field_name = field_obj.get("/T")
                 field_type = field_obj.get("/FT")
+                field_value = field_obj.get("/V", "")
 
                 # Determine the field type
                 if field_type == "/Tx":
@@ -31,13 +32,15 @@ def list_pdf_fields(pdf_path):
                 else:
                     field_type = "Unknown"
 
-                print(f"Field Name: {field_name}, Field Type: {field_type}")
+                print(
+                    f"Field Name: {field_name}, Field Type: {field_type}, Field value: {field_value}"
+                )
         else:
             print("No form fields found in this PDF.")
 
 
 # Path to your PDF file
-pdf_path = r"C:\python\scripts\pdfeditor2\docs\combination.pdf"
+pdf_path = r"C:\python\scripts\pdfeditor2\docs\perpendicular.pdf"
 
 # List the PDF fields
 list_pdf_fields(pdf_path)
@@ -116,19 +119,21 @@ if features:
         try:
             feature_id = feature.attributes[object_id_field]
             attachments = layer.attachments.get_list(feature_id)
-            
+
             if feature_id > 124:
                 for attachment in attachments:
                     attachment_name = attachment["name"]
                     attachment_extension = os.path.splitext(attachment_name)[1].lower()
-                    
+
                     if attachment_extension in allowed_extensions:
                         attachment_id = attachment["id"]
                         final_output = f"C:\\python\\scripts\\pdfeditor2\\processing\\downloads\\attachments\\{feature_id}-{attachment_id}{attachment_extension}"
                         temp_output = f"C:\\python\\scripts\\pdfeditor2\\processing\\downloads\\attachments\\temp"
 
                         # Debug: Print before download
-                        print(f"Attempting to download attachment {attachment_id} for feature {feature_id}")
+                        print(
+                            f"Attempting to download attachment {attachment_id} for feature {feature_id}"
+                        )
 
                         # Download attachment
                         attachment_url = layer.attachments.download(
@@ -137,11 +142,20 @@ if features:
 
                         # Debug: Check if download succeeded
                         if os.path.exists(temp_output):
-                            print(f"Downloaded attachment {attachment_id} to {temp_output}")
-                            os.rename(os.path.join(temp_output, attachment_name), f"{feature_id}-{attachment_id}{attachment_extension}")
-                            print(f"Saved as {feature_id}-{attachment_id}{attachment_extension}")
+                            print(
+                                f"Downloaded attachment {attachment_id} to {temp_output}"
+                            )
+                            os.rename(
+                                os.path.join(temp_output, attachment_name),
+                                f"{feature_id}-{attachment_id}{attachment_extension}",
+                            )
+                            print(
+                                f"Saved as {feature_id}-{attachment_id}{attachment_extension}"
+                            )
                         else:
-                            print(f"Failed to download or locate the file at {temp_output}")
+                            print(
+                                f"Failed to download or locate the file at {temp_output}"
+                            )
 
         except Exception as e:
             print(f"Error processing feature {feature_id}: {e}")
