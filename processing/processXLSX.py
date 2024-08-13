@@ -72,4 +72,4 @@ def update_table(combined_output, recent_output):
 
     print(f"{combined_output} table updated with data from {recent_output}")
 
-update_table(r"C:\python\scripts\pdfeditor2\processing\combined_output1.csv", update_csv)
+update_table(r"C:\python\scripts\pdfeditor2\processing\combined_output.csv", update_csv)

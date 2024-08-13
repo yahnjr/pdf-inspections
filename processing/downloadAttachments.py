@@ -101,6 +101,6 @@ def downloadAttachments(feature_layer_url, output_folder, last_download):
 #Define variables
 feature_layer_url = "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6_results/FeatureServer/0"
 output_folder = r"C:\python\scripts\etblender"
-last_download = 100
+last_download = 150
 
 downloadAttachments(feature_layer_url, output_folder, last_download)
