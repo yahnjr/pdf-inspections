@@ -74,7 +74,7 @@ function addEventListeners(fieldId, passFailId, threshold, targetFieldId, logic 
 window.addEventListener('DOMContentLoaded', (event) => {
     console.log("DOM fully loaded and parsed");
 
-    addEventListeners('runslope-1', 'runslope-1-pf', 2, 'slopex');
+    addEventListeners('runslope-1', 'runslope-1-pf', 8.3, 'slopex');
     addEventListeners('cross-slope1', 'cross-slope1-pf', 2, 'slopey');
     addEventListeners('cross-slope2', 'cross-slope2-pf', 2);
     addEventListeners('cross-slope3', 'cross-slope3-pf', 2);

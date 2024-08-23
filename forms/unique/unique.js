@@ -83,9 +83,37 @@ function autosetParallel(valueFieldId, valueFieldId2) {
     }
 }
 
+function autoMidblock(valueFieldId, commentsId) {
+    return function() {
+        const valueInput = document.getElementById(valueFieldId);
+        const commentsBox = document.getElementById(commentsId);
+    
+        valueInput.addEventListener('change', function() {
+            if (this.value === 'midblock') {
+                if (!commentsBox.value.startsWith("Mid-block")) {
+                    commentsBox.value = "Mid-block " + commentsBox.value; 
+                }
+            } else {
+                commentsBox.value = commentsBox.value.replace("Mid-block ", "");
+            }
+        });
+
+    }
+}
+
 function addEventListeners(fieldId, passFailId, threshold, targetFieldId, logic = 'upper') {
     const inputField = document.getElementById(fieldId);
     const passFailField = document.getElementById(passFailId);
+
+    if (logic === 'midblock') {
+        if (inputField && passFailField) {
+            inputField.addEventListener('input', autoMidblock(fieldId, passFailId));
+            console.log(`Logic added to watch for Midblock placement`);
+        } else {
+            console.log(`Something went wrong while establishing midblock logic`)
+        }
+        return;
+    }
 
     if (inputField && passFailField) {
         const passFailFunction = logic === 'upper' ? autoPFupper(fieldId, passFailId, threshold) : autoPFlower(fieldId, passFailId, threshold);
@@ -109,7 +137,7 @@ function addEventListeners(fieldId, passFailId, threshold, targetFieldId, logic 
 window.addEventListener('DOMContentLoaded', (event) => {
     console.log("DOM fully loaded and parsed");
 
-    addEventListeners('runslope-1', 'runslope-1-pf', 2, 'slopex');
+    addEventListeners('runslope-1', 'runslope-1-pf', 8.3, 'slopex');
     addEventListeners('cross-slope1', 'cross-slope1-pf', 2, 'slopey');
     addEventListeners('cross-slope2', 'cross-slope2-pf', 2);
     addEventListeners('cross-slope3', 'cross-slope3-pf', 2);
@@ -124,8 +152,12 @@ window.addEventListener('DOMContentLoaded', (event) => {
     addEventListeners('flare-slope2', 'flare-slope2-pf', 10);
     addEventListeners('curb-slope', 'curb-slope-pf', 8.3);
     addEventListeners('counter-slope', 'counter-slope-pf', 5);
+    addEventListeners('corner-position', 'comments-box', null, 'comments-box', 'midblock');
 
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('cal-date').value = today;
-    document.getElementById('inspection-dat').value = today;
+    document.getElementById('inspection-date').value = today;
+
+    const dropdown = document.getElementById('corner-position');
+    const commentsBox = document.getElementById('comments-box');
 });

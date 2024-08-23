@@ -1,6 +1,6 @@
 import requests
 import os
-import getpass 
+import getpass
 
 # ArcGIS Online credentials
 username = input("Enter your ArcGIS Online username: ")
@@ -61,7 +61,7 @@ for feature in features:
 
             if response.status_code == 200:
                 # Save the attachment using its ID as the filename
-                file_path = os.path.join(output_dir, f"{attachment_id}.jpg")
+                file_path = os.path.join(output_dir, f"{attachment_id}.xlsx")
                 with open(file_path, "wb") as file:
                     file.write(response.content)
                 print(f"Downloaded attachment {attachment_id} for feature {object_id}")

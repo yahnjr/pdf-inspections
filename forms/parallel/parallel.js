@@ -48,9 +48,37 @@ function autosetParallel(valueFieldId, valueFieldId2) {
     }
 }
 
+function autoMidblock(valueFieldId, commentsId) {
+    return function() {
+        const valueInput = document.getElementById(valueFieldId);
+        const commentsBox = document.getElementById(commentsId);
+    
+        valueInput.addEventListener('change', function() {
+            if (this.value === 'midblock') {
+                if (!commentsBox.value.startsWith("Mid-block")) {
+                    commentsBox.value = "Mid-block " + commentsBox.value; 
+                }
+            } else {
+                commentsBox.value = commentsBox.value.replace("Mid-block ", "");
+            }
+        });
+
+    }
+}
+
 function addEventListeners(fieldId, passFailId, threshold, targetFieldId, logic = 'upper') {
     const inputField = document.getElementById(fieldId);
     const passFailField = document.getElementById(passFailId);
+
+    if (logic === 'midblock') {
+        if (inputField && passFailField) {
+            inputField.addEventListener('input', autoMidblock(fieldId, passFailId));
+            console.log(`Logic added to watch for Midblock placement`);
+        } else {
+            console.log(`Something went wrong while establishing midblock logic`)
+        }
+        return;
+    }
 
     if (inputField && passFailField) {
         const passFailFunction = logic === 'upper' ? autoPFupper(fieldId, passFailId, threshold) : autoPFlower(fieldId, passFailId, threshold);
@@ -87,9 +115,10 @@ window.addEventListener('DOMContentLoaded', (event) => {
     addEventListeners('slopey', 'slopey-pf', 2);
     addEventListeners('curb-slope', 'curb-slope-pf', 8.3);
     addEventListeners('counter-slope', 'counter-slope-pf', 5);
+    addEventListeners('corner-position', 'comments-box', null, 'comments-box', 'midblock');
 
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('cal-date').value = today;
-    document.getElementById('inspection-dat').value = today;
+    document.getElementById('inspection-date').value = today;
 });
 
