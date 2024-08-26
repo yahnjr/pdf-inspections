@@ -88,3 +88,50 @@ for file in os.listdir(file_path):
         print(f"{file} renamed to {new_file}")
 
 print("Renaming complete")
+
+
+import pandas as pd
+import os
+
+df = pd.read_csv(r"C:\python\scripts\pdfeditor2\processing\combined_output.csv")
+
+print(df.head())
+
+image_col = ["image1", "image2", "image3"]
+
+counter = 315
+
+for index, row in df.iterrows():
+    for col in image_col:
+        if row[col] == "image.jpg" and counter < 349:
+            output = f"IMG_0{counter}.jpeg"
+            df.at[index, col] = output
+            counter += 1
+            print(output)
+        else:
+            print(f"Skipping feature {row[col]}")
+
+df.to_csv(r"C:\python\scripts\pdfeditor2\processing\combined_output1.csv")
+
+for index, row in df.iterrows():
+    for col in image_col:
+        if (
+            isinstance(row[col], str)
+            and row[col].startswith("IMG")
+            and row["fileName"] > 127
+        ):
+            image_name = row[col].replace(".jpeg", ".JPG")
+
+            old_path = f"C:\\python\\scripts\\attachments\\sort\\202408__\\{image_name}"
+            new_path = f"C:\\python\\scripts\\attachments\\sort\\202408__\\{row['fileName']}-{col[-1]}.JPG"
+
+            if os.path.exists(old_path):
+                os.rename(old_path, new_path)
+                print(
+                    f"{os.path.basename(old_path)} changed to {os.path.basename(new_path)}"
+                )
+            else:
+                print(f"Error finding {os.path.basename(old_path)}")
+
+        else:
+            print(f"Skipping feature {row[col]}")
