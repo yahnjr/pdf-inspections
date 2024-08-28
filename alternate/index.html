@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alternate Inspector App</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
+    <script src="https://js.arcgis.com/4.29/"></script>
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #section1 {
+            width: 40%;
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        #section2 {
+            width: 60%;
+            height: 100%;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <section id="section1">
+        <div id="left">
+            <p>Last Submitted ObjectID: <span id="maxId"></span></p>
+            <p>Next ObjectID: <span id="nextObjectId"></span></p>
+        </div>
+        
+        <div class="header-group">
+            <label for="ns-road">North-South Road Name</label>
+            <input type="text" id="ns-road" name="ns-road">
+        </div>
+        <div class="header-group">
+            <label for="ew-road">East-West Road Name</label>
+            <input type="text" id="ew-road" name="ew-road">
+        </div>
+
+        <select id="formSelect">
+            <option value="parallel" filePath="../docs/parallel.pdf">Parallel</option>
+            <option value="combination" filePath="../docs/combination.pdf">Combination</option>
+            <option value="perpendicular" filePath="../docs/perpendicular.pdf">Perpendicular</option>
+            <option value="cutthrough" filePath="../docs/cutthrough.pdf">Cut Through Island</option>
+            <option value="end-of-walk" filePath="../docs/end-of-walk.pdf">End of Walk</option>
+            <option value="unique" filePath="../docs/unique.pdf">Unique</option>
+            <option value="blended-transition" filePath="../docs/blended-transition.pdf">Blended Transition</option>
+        </select>
+
+        <button onclick="downloadPDF()">Download PDF</button>
+        </section>
+        
+        <section id="section2">
+            <div id="map"></div>
+        </section>
+
+
+
+        <script>
+            require([
+                "esri/Map",
+                "esri/views/MapView",
+                "esri/layers/FeatureLayer",
+                "esri/layers/GeoJSONLayer",
+                "esri/symbols/SimpleMarkerSymbol",
+                "esri/symbols/SimpleFillSymbol", 
+                "esri/renderers/SimpleRenderer",
+                "esri/Basemap"
+                ], function(Map, MapView, FeatureLayer, GeoJSONLayer, SimpleMarkerSymbol, SimpleFillSymbol, SimpleRenderer, Basemap) {
+                var map = new Map({
+                    basemap: "topo-vector"
+                });
+
+                var view = new MapView({
+                    container: "map",
+                    map: map,
+                    center: [-122.99184422273991, 45.596667353862095],
+                    zoom: 15 
+                });
+
+                var geojsonLayer = new GeoJSONLayer({
+                    url: "intersections.json",
+                    renderer: new SimpleRenderer({
+                        symbol: new SimpleMarkerSymbol({
+                            size: 1,
+                            color: "white"
+                        })
+                    })
+                });
+
+                map.add(geojsonLayer);
+                
+                var featureLayerUrl = "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6/FeatureServer/0"
+
+                var featureLayer = new FeatureLayer({
+                    url: featureLayerUrl,
+                    outFields: ["*"],
+                    editable: true,
+                });
+
+                map.add(featureLayer);
+
+                featureLayer.queryObjectIds().then(function(ids) {
+                    var maxId = Math.max(...ids);
+                    var nextObjectId = maxId + 1;
+                    console.log(maxId);
+                    console.log(nextObjectId);
+                    document.getElementById('nextObjectId').innerText = nextObjectId;
+                    document.getElementById('maxId').innerText = maxId;
+                });
+
+            });
+
+            async function loadPDFLib() {
+                const scriptUrl = "https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js";
+
+                try {
+                    const response = await fetch(scriptUrl);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch the script');
+                    }
+                    const scriptText = await response.text();
+                    eval(scriptText);  // Evaluate the script content
+
+                    if (window.PDFLib) {
+                        return window.PDFLib;
+                    } else {
+                        throw new Error('PDFLib failed to load');
+                    }
+                } catch (error) {
+                    console.error("Error loading PDFLib:", error);
+                    throw error;
+                }
+            }
+
+            async function downloadPDF() {
+
+                const PDFLib = await loadPDFLib();
+
+                const nextObjectId = document.getElementById('nextObjectId').innerText;
+                const nsRoad = document.getElementById('ns-road').value;
+                const ewRoad = document.getElementById('ew-road').value;
+                const selectedOption = document.getElementById('formSelect').selectedOptions[0];
+                const filePath = selectedOption.getAttribute('filePath');
+
+                const pdfBytes = await fetch(filePath).then(res => res.arrayBuffer());
+                const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+                const form = pdfDoc.getForm();
+
+                // Assuming there are fields in the PDF named 'NSRoad' and 'EWRoad'
+                const nsRoadField = form.getTextField('NSRoad');
+                const ewRoadField = form.getTextField('EWRoad');
+
+                nsRoadField.setText(nsRoad);
+                ewRoadField.setText(ewRoad);
+
+                const modifiedPdfBytes = await pdfDoc.save();
+                const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${nextObjectId}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        </script>
+</body>
+</html>
