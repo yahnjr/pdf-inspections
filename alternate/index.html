@@ -59,25 +59,28 @@
         </select>
 
         <button onclick="downloadPDF()">Download PDF</button>
-        </section>
-        
-        <section id="section2">
-            <div id="map"></div>
-        </section>
+    </section>
+    
+    <section id="section2">
+        <div id="map"></div>
+    </section>
 
-
-
-        <script>
-            require([
-                "esri/Map",
-                "esri/views/MapView",
-                "esri/layers/FeatureLayer",
-                "esri/layers/GeoJSONLayer",
-                "esri/symbols/SimpleMarkerSymbol",
-                "esri/symbols/SimpleFillSymbol", 
-                "esri/renderers/SimpleRenderer",
-                "esri/Basemap"
-                ], function(Map, MapView, FeatureLayer, GeoJSONLayer, SimpleMarkerSymbol, SimpleFillSymbol, SimpleRenderer, Basemap) {
+    <script>
+        require([
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/layers/FeatureLayer",
+            "esri/layers/GeoJSONLayer",
+            "esri/symbols/SimpleMarkerSymbol",
+            "esri/symbols/SimpleFillSymbol", 
+            "esri/renderers/SimpleRenderer",
+            "esri/geometry/Point",
+            "esri/geometry/geometryEngine",
+            "esri/geometry/projection",
+            "esri/Graphic",
+            "esri/Basemap"
+        ], function(Map, MapView, FeatureLayer, GeoJSONLayer, SimpleMarkerSymbol, SimpleFillSymbol, SimpleRenderer, Point, geometryEngine, projection, Graphic, Basemap) {
+            projection.load().then(function() {
                 var map = new Map({
                     basemap: "topo-vector"
                 });
@@ -88,6 +91,10 @@
                     center: [-122.99184422273991, 45.596667353862095],
                     zoom: 15 
                 });
+
+                function printProjection(layer) {
+                    console.log(`${layer.title} projection: ${layer.spatialReference.wkid}`);
+                }
 
                 var geojsonLayer = new GeoJSONLayer({
                     url: "intersections.json",
@@ -100,16 +107,18 @@
                 });
 
                 map.add(geojsonLayer);
+                geojsonLayer.when(() => printProjection(geojsonLayer));
                 
-                var featureLayerUrl = "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6/FeatureServer/0"
+                var featureLayerUrl = "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6/FeatureServer/0";
 
                 var featureLayer = new FeatureLayer({
                     url: featureLayerUrl,
                     outFields: ["*"],
-                    editable: true,
+                    editable: true
                 });
 
                 map.add(featureLayer);
+                featureLayer.when(() => printProjection(featureLayer));
 
                 featureLayer.queryObjectIds().then(function(ids) {
                     var maxId = Math.max(...ids);
@@ -120,62 +129,88 @@
                     document.getElementById('maxId').innerText = maxId;
                 });
 
+                view.on("double-click", function(event) {
+                    event.stopPropagation();
+
+                    var point = new Point({
+                        longitude: event.mapPoint.longitude,
+                        latitude: event.mapPoint.latitude,
+                        spatialReference: { wkid: 4326 }  // WGS84
+                    });
+
+                    // Create and add the graphic
+                    var graphic = new Graphic({
+                        geometry: point,
+                        symbol: new SimpleMarkerSymbol({
+                            color: [226, 119, 40],
+                            outline: {
+                                color: [255, 255, 255],
+                                width: 2
+                            }
+                        })
+                    });
+
+                    view.graphics.add(graphic);
+
+                    nearestCoordinate
+                    
+                });
             });
+        });
 
-            async function loadPDFLib() {
-                const scriptUrl = "https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js";
+        async function loadPDFLib() {
+            const scriptUrl = "https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js";
 
-                try {
-                    const response = await fetch(scriptUrl);
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch the script');
-                    }
-                    const scriptText = await response.text();
-                    eval(scriptText);  // Evaluate the script content
-
-                    if (window.PDFLib) {
-                        return window.PDFLib;
-                    } else {
-                        throw new Error('PDFLib failed to load');
-                    }
-                } catch (error) {
-                    console.error("Error loading PDFLib:", error);
-                    throw error;
+            try {
+                const response = await fetch(scriptUrl);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch the script');
                 }
+                const scriptText = await response.text();
+                eval(scriptText);  // Evaluate the script content
+
+                if (window.PDFLib) {
+                    return window.PDFLib;
+                } else {
+                    throw new Error('PDFLib failed to load');
+                }
+            } catch (error) {
+                console.error("Error loading PDFLib:", error);
+                throw error;
             }
+        }
 
-            async function downloadPDF() {
+        async function downloadPDF() {
+            const PDFLib = await loadPDFLib();
 
-                const PDFLib = await loadPDFLib();
+            const nextObjectId = document.getElementById('nextObjectId').innerText;
+            const nsRoad = document.getElementById('ns-road').value;
+            const ewRoad = document.getElementById('ew-road').value;
+            const selectedOption = document.getElementById('formSelect').selectedOptions[0];
+            const filePath = selectedOption.getAttribute('filePath');
 
-                const nextObjectId = document.getElementById('nextObjectId').innerText;
-                const nsRoad = document.getElementById('ns-road').value;
-                const ewRoad = document.getElementById('ew-road').value;
-                const selectedOption = document.getElementById('formSelect').selectedOptions[0];
-                const filePath = selectedOption.getAttribute('filePath');
+            const pdfBytes = await fetch(filePath).then(res => res.arrayBuffer());
+            const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+            const form = pdfDoc.getForm();
 
-                const pdfBytes = await fetch(filePath).then(res => res.arrayBuffer());
-                const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
-                const form = pdfDoc.getForm();
+            // Assuming there are fields in the PDF named 'NSRoad' and 'EWRoad'
+            const nsRoadField = form.getTextField('NSRoad');
+            const ewRoadField = form.getTextField('EWRoad');
 
-                // Assuming there are fields in the PDF named 'NSRoad' and 'EWRoad'
-                const nsRoadField = form.getTextField('NSRoad');
-                const ewRoadField = form.getTextField('EWRoad');
+            nsRoadField.setText(nsRoad);
+            ewRoadField.setText(ewRoad);
 
-                nsRoadField.setText(nsRoad);
-                ewRoadField.setText(ewRoad);
+            const modifiedPdfBytes = await pdfDoc.save();
+            const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
+            const url = URL.createObjectURL(blob);
 
-                const modifiedPdfBytes = await pdfDoc.save();
-                const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
-                const url = URL.createObjectURL(blob);
-
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${nextObjectId}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                URL.revokeObjectURL(url);
-            }
-        </script>
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${nextObjectId}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
 </body>
 </html>
