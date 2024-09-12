@@ -119,6 +119,12 @@
       height: 80vh;
     }
 
+    .selectors {
+      display: inline-block;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+
     button, .btn-link {
       background-color: white;
       color: #333;
@@ -157,18 +163,18 @@
 
   <div id="right">
     <iframe id="formIframe" src="forms/parallel/index.html" width="100%" height="90%"></iframe>
-    <div class="selectors">
-      <select id="formSelect" onchange="changeIframeSrc()">
-        <option value="parallel">Parallel</option>
-        <option value="combination">Combination</option>
-        <option value="perpendicular">Perpendicular</option>
-        <option value="cutthrough">Cut Through Island</option>
-        <option value="end-of-walk">End of Walk</option>
-        <option value="unique">Unique</option>
-        <option value="blended-transition">Blended Transition</option>
-      </select>
-    </div>
-    <div>
+    <div id="selector">
+      <div class="selectors">
+        <select id="formSelect" onchange="changeIframeSrc()">
+          <option value="parallel">Parallel</option>
+          <option value="combination">Combination</option>
+          <option value="perpendicular">Perpendicular</option>
+          <option value="cutthrough">Cut Through Island</option>
+          <option value="end-of-walk">End of Walk</option>
+          <option value="unique">Unique</option>
+          <option value="blended-transition">Blended Transition</option>
+        </select>
+      </div>
       <button id="myBtn">View PDF</button>
       <button id="mapBtn">View Map</button>
       <a id="guideBtn" href="docs/ADAInspectorsGuide.pdf" download="ADAInspectorsGuide.pdf" class="btn-link">ADA Guide</a>

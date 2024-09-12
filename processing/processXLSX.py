@@ -58,8 +58,6 @@ def excel2csvProcess(combined_output_path):
 
 excel2csvProcess(combined_output_path)
 
-
-
 def update_table(combined_output, recent_output):
     df = pd.read_csv(combined_output)
     df_update = pd.read_csv(recent_output)
