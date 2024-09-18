@@ -72,6 +72,7 @@ img {
   
   .side-box {
     flex: 1;
+    overflow: hidden;
   }
   
   .middle-box {
@@ -156,3 +157,33 @@ button:hover {
 .file-input {
     display: none;
   }
+
+@media screen and (max-width: 768px) {
+    .side-box {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .internal-column-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .comments-box input {
+        width: 60px;
+    }
+
+    .internal-column3 {
+        max-width: 60px;
+    }
+
+    #comments-box {
+        display: flex;
+        flex-direction: column;
+    }
+
+    button {
+        max-width: 100px;
+        font-size: 0.7em;
+    }
+}
