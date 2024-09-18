@@ -2,6 +2,7 @@ from pdfrw import PdfReader, PdfWriter, PdfDict, PdfName, PdfString
 import pandas as pd
 import os
 
+
 def format_choice_value(value):
     """Format the value for comparison with list box options."""
     return str(value).strip().lower()
@@ -27,6 +28,7 @@ def combobox(annotation, value):
 def fill_pdf_form(pdf_template_path, data, lookup, output_path):
     template_pdf = PdfReader(pdf_template_path)
     fields_updated = False
+    comments = ""  # Initialize an empty string for comments
 
     print("\nProcessing PDF fields:")
     for page in template_pdf.pages:
@@ -69,6 +71,8 @@ def fill_pdf_form(pdf_template_path, data, lookup, output_path):
                                         print(
                                             f"  Combobox value selected: {field_value}"
                                         )
+                                        # Append to comments string
+                                        comments += f"{field_name}: {field_value}\n"
                                     except Exception as e:
                                         print(
                                             f"  Error setting combobox value: {str(e)}"
@@ -200,6 +204,19 @@ def fill_pdf_form(pdf_template_path, data, lookup, output_path):
                                 print(f"  No data found in CSV for this field")
                         else:
                             print(f"  Not found in lookup table")
+
+    # Update comments field with accumulated string
+    if comments:
+        for page in template_pdf.pages:
+            annotations = page.get("/Annots")
+            if annotations:
+                for annotation in annotations:
+                    field = annotation.get("/T")
+                    if field and field == "(ADA2_COMNT)":
+                        annotation.update(PdfDict(V=comments, AP=PdfDict()))
+                        print(f"\nComments field updated with: \n{comments}")
+                        fields_updated = True
+                        break
 
     if not fields_updated:
         print(

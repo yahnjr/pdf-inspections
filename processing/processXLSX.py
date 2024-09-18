@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 dataframes = []
-output_folder = r"C:\python\scripts\pdfeditor2\processing\downloads"
+output_folder = r"C:\python\scripts\etblender"
 
 # Iterate over each file in the output folder
 for file_name in os.listdir(output_folder):
@@ -23,7 +23,7 @@ for file_name in os.listdir(output_folder):
 combined_df = pd.concat(dataframes, ignore_index=True, sort=False)
 
 # Save the combined DataFrame to a new Excel file
-combined_output_path = r"C:\python\scripts\pdfeditor2\processing\combined_output2.xlsx"
+combined_output_path = r"C:\python\scripts\etblender\combined_output2.xlsx"
 combined_df.to_excel(combined_output_path, index=False)
 
 update_csv = combined_output_path.split(".")[0] + ".csv"
@@ -47,6 +47,7 @@ def excel2csvProcess(combined_output_path):
     field_names = [
         remove_vowels(name) if len(name) > 13 else name for name in field_names_list
     ]
+
     def remove_vowels(text):
         return "".join(char for char in text if char.lower() not in "aeiou")
 
@@ -56,7 +57,9 @@ def excel2csvProcess(combined_output_path):
     # Optionally, write the modified DataFrame to a new CSV file
     df.to_csv(update_csv, index=False)
 
+
 excel2csvProcess(combined_output_path)
+
 
 def update_table(combined_output, recent_output):
     df = pd.read_csv(combined_output)
@@ -69,6 +72,7 @@ def update_table(combined_output, recent_output):
     df_combined.to_csv(combined_output, index=False)
 
     print(f"{combined_output} table updated with data from {recent_output}")
+
 
 update_table(r"C:\python\scripts\pdfeditor2\processing\combined_output.csv", update_csv)
 

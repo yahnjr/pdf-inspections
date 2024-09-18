@@ -3,123 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alternate Inspector App</title>
-    <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
-    <script src="https://js.arcgis.com/4.29/"></script>
+    <title>Document</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.30/esri/themes/light/main.css">
+    <script src="https://js.arcgis.com/4.30/"></script>
+    <script type="module" src="https://js.arcgis.com/map-components/4.30/arcgis-map-components.esm.js"></script>
     <style>
         body {
-            display: flex;
-            margin: 0;
-            padding: 0;
             height: 100vh;
-            overflow: hidden;
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-        }
-        #section1 {
-            width: 40%;
-            padding: 20px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        #section1 p {
-            margin: 0 0 15px;
-            font-size: 1.1rem;
-            color: #333;
-        }
-        .header-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #333;
-        }
-        input[type="text"], select {
             width: 100%;
-            padding: 10px;
-            font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            background-color: #f9f9f9;
-            transition: border 0.3s ease;
         }
-        input[type="text"]:focus, select:focus {
-            border-color: #007acc;
-            outline: none;
-            background-color: #fff;
-        }
-        select {
-            cursor: pointer;
-        }
-        button {
-            background-color: #007acc;
-            color: #fff;
-            padding: 12px;
-            font-size: 1rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 20px;
-        }
-        button:hover {
-            background-color: #005fa3;
-        }
-        #section2 {
-            width: 60%;
-            height: 100%;
-            background-color: #eaeaea;
-        }
+
         #map {
+            height: 90vh;
             width: 100%;
-            height: 100%;
         }
     </style>
 </head>
 <body>
-    <section id="section1">
-        <div id="left">
-            <p>Last Submitted ObjectID: <span id="maxId"></span></p>
-            <p>Next ObjectID: <span id="nextObjectId"></span></p>
-        </div>
+    <div id="map"></div>
+    <label for id="intersection">Nearest Intersection</label>
+    <input type="text" id="intersection">
+    <script>
+        require ([
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/layers/FeatureLayer",
+            "esri/geometry/geometryEngine",
+            "esri/tasks/support/Query"
+        ], function(Map, MapView, FeatureLayer, geometryEngine, Query) {
 
-        <div class="header-group">
-            <label for="ns-road">North-South Road Name</label>
-            <input type="text" id="ns-road" name="ns-road">
-        </div>
-        <div class="header-group">
-            <label for="ew-road">East-West Road Name</label>
-            <input type="text" id="ew-road" name="ew-road">
-        </div>
+            var map = new Map({
+                basemap: "streets"
+            });
 
-        <div class="header-group">
-            <label for="formSelect">Select PDF Form</label>
-            <select id="formSelect">
-                <option value="parallel" filePath="../docs/parallel.pdf">Parallel</option>
-                <option value="combination" filePath="../docs/combination.pdf">Combination</option>
-                <option value="perpendicular" filePath="../docs/perpendicular.pdf">Perpendicular</option>
-                <option value="cutthrough" filePath="../docs/cutthrough.pdf">Cut Through Island</option>
-                <option value="end-of-walk" filePath="../docs/end-of-walk.pdf">End of Walk</option>
-                <option value="unique" filePath="../docs/unique.pdf">Unique</option>
-                <option value="blended-transition" filePath="../docs/blended-transition.pdf">Blended Transition</option>
-            </select>
-        </div>
+            var view = new MapView({
+                container: "map",
+                center: [-122.99184422273991, 45.596667353862095],
+                zoom: 15 
+            });
 
-        <button onclick="downloadPDF()">Download PDF</button>
-    </section>
-    
-    <section id="section2">
-        <div id="map"></div>
-    </section>
+            function printProjection(layer) {
+            console.log(`${layer.title} projection: ${layer.spatialReference.wkid}`);
+            }
 
-    <script src="map.js"></script>
-    <script src="pdf.js"></script>
+            var geojsonLayer = new GeoJSONLayer({
+                url: "intersections.json",
+                renderer: new SimpleRenderer({
+                    symbol: new SimpleMarkerSymbol({
+                        size: 1,
+                        color: "white"
+                    })
+                })
+            });
+
+            var featureLayer = new FeatureLayer({
+                url: "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6/FeatureServer/0"
+            });
+
+            map.add(featureLayer);
+
+            view.on("click", function(event) {
+                var query = featurelayer.createQuere();
+                query.geometry = event.mapPoint;
+                query.distance = 500;
+                query.units = "meters";
+                qyery.spatialRelationship = "intersects";
+                query.returnGeometry = true;
+                query.outFields = ["*"];
+
+                featureLayer.queryFeatures(query).then(function(response) {
+                    if (response.features.length > 0) {
+                        var closestFeature = response.features[0];
+                        var minDistance = geometryEngine.distance(event.mapPoint, closestFeature.geometry, "meters")
+
+                        response.features.forEach(function(feature) {
+                            var distance = geometryEngine.distance(event.mapPoint, feature.geometry, "meters");
+                            if (distance < minDistance) {
+                                closestFeature = feature;
+                                minDistance = distance;
+                            }
+                        });
+
+                        var name = closestFeature.attributes("fileName");
+                        document.getElementById("intersection").value = name;
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
