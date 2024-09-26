@@ -169,6 +169,10 @@
             <span id="fileName3"></span>
           </div>
           </div>
+          <div id="resetButtons">
+            <button type="button" onclick="resetForm()">Reset Form</button>
+            <button type="button" onclick="resetFormNoIntersections()">Reset Form (no Intersections)</button>
+          </div>
           </div>
       
       <div class="box middle-box">
@@ -370,6 +374,46 @@
       </select>
     </div>
 </div>
+</div>
+
+<div id="tableModal" class="modal" style="display:none">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h3>Enter Curb Slope Measurements</h3>
+    <table>
+      <tr>
+        <td><input type="number" id="tablenum1" name="tablenum1" class="table-input" placeholder=" "></td>
+      </tr>
+      <tr>
+        <td><input type="number" id="tablenum2" name="tablenum2" class="table-input" placeholder=" "></td>
+      </tr>
+      <tr>
+        <td><input type="number" id="tablenum3" name="tablenum3" class="table-input" placeholder=" "></td>
+      </tr>
+      <tr>
+        <td><input type="number" id="tablenum4" name="tablenum4" class="table-input" placeholder=" "></td>
+      </tr>
+      <tr>
+        <td><input type="number" id="tablenum5" name="tablenum5" class="table-input" placeholder=" "></td>
+      </tr>
+      <tr>
+        <td><input type="number" id="tablenum6" name="tablenum6" class="table-input" placeholder=" "></td>
+      </tr>
+      <tr>
+        <td><input type="number" id="tablenum7" name="tablenum7" class="table-input" placeholder=" "></td>
+      </tr>
+      <tr>
+        <td><input type="number" id="tablenum8" name="tablenum8" class="table-input" placeholder=" "></td>
+      </tr>
+      <tr>
+        <td><input type="number" id="tablenum9" name="tablenum9" class="table-input" placeholder=" "></td>
+      </tr>
+      <tr>
+        <td><input type="number" id="tablenum10" name="tablenum10" class="table-input" placeholder=" "></td>
+      </tr>
+    </table>
+    <button id="calculateAverage">Save & Calculate Average</button>
+  </div>
 </div>
 
 <script src="blended-transition.js"></script>

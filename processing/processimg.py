@@ -1,3 +1,41 @@
+import pandas as pd
+import os
+
+df = pd.read_csv(r"C:\python\scripts\pdfeditor2\processing\missing_imgs.csv")
+folder_path = r"C:\\python\\scripts\\attachments\\MissingPhotos"
+
+print(df.head())
+
+image_col = ["image1", "image2", "image3"]
+
+counter = 315
+
+for index, row in df.iterrows():
+    for col in image_col:
+        if (
+            isinstance(row[col], str)
+            and row[col].startswith("IMG")
+            and row["fileName"] > 155
+        ):
+            image_name = row[col].replace(".jpeg", ".JPG")
+            new_name = f"{row['fileName']}-{col[-1]}.JPG"
+
+            old_path = os.path.join(folder_path, image_name)
+            new_path = os.path.join(folder_path, new_name)
+
+            if os.path.exists(old_path):
+                os.rename(old_path, new_path)
+                print(
+                    f"{os.path.basename(old_path)} changed to {os.path.basename(new_path)}"
+                )
+            else:
+                print(f"Error finding {os.path.basename(old_path)}")
+
+        else:
+            print(f"Skipping feature {row[col]}")
+
+# Alternate download method for when arcgis library has infinite recursion issues
+
 import requests
 import os
 import getpass
@@ -6,10 +44,8 @@ import getpass
 username = input("Enter your ArcGIS Online username: ")
 password = getpass.getpass("Enter your ArcGIS Online password: ")
 
-# Feature layer URL
 layer_url = "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6_results/FeatureServer/0"
 
-# Specify directory to store attachments
 output_dir = r"C:\python\scripts\pdfeditor2\processing\downloads\attachments"
 
 # Generate token
@@ -41,13 +77,11 @@ features = query_response.json()["features"]
 for feature in features:
     object_id = feature["attributes"]["objectid"]
 
-    # Get attachments for the feature
     attachments_url = f"{layer_url}/{object_id}/attachments"
     attachments_params = {"f": "json", "token": token}
     attachments_response = requests.get(attachments_url, params=attachments_params)
     attachments = attachments_response.json()["attachmentInfos"]
 
-    # Download each attachment
     if object_id > 124:
         for attachment in attachments:
             attachment_id = attachment["id"]
@@ -90,48 +124,33 @@ for file in os.listdir(file_path):
 print("Renaming complete")
 
 
-import pandas as pd
-import os
+def rename_images(df, directory):
+    # Loop through each row in the dataframe
+    for index, row in df.iterrows():
+        # Get the fileName attribute from the current row
+        file_name = row["fileName"]
 
-df = pd.read_csv(r"C:\python\scripts\pdfeditor2\processing\combined_output.csv")
+        # Loop through the image columns
+        for col in ["image1", "image2", "image3"]:
+            # Get the image value from the current column
+            image_value = row[col]
 
-print(df.head())
+            if pd.notna(image_value):  # Only proceed if the value is not NaN
+                # Construct the old file name based on the image value
+                old_file = f"{image_value}.jpg"
+                old_path = os.path.join(directory, old_file)
 
-image_col = ["image1", "image2", "image3"]
+                # Check if the file exists in the directory
+                if os.path.exists(old_path):
+                    # Create the new file name based on the fileName attribute and column number
+                    new_file = f"{file_name}-{col[-1]}.jpg"
+                    new_path = os.path.join(directory, new_file)
 
-counter = 315
+                    # Rename the file
+                    os.rename(old_path, new_path)
+                    print(f"Renamed {old_file} to {new_file}")
+                else:
+                    print(f"File {old_file} not found in {directory}")
 
-for index, row in df.iterrows():
-    for col in image_col:
-        if row[col] == "image.jpg" and counter < 349:
-            output = f"IMG_0{counter}.jpeg"
-            df.at[index, col] = output
-            counter += 1
-            print(output)
-        else:
-            print(f"Skipping feature {row[col]}")
 
-df.to_csv(r"C:\python\scripts\pdfeditor2\processing\combined_output1.csv")
-
-for index, row in df.iterrows():
-    for col in image_col:
-        if (
-            isinstance(row[col], str)
-            and row[col].startswith("IMG")
-            and row["fileName"] > 127
-        ):
-            image_name = row[col].replace(".jpeg", ".JPG")
-
-            old_path = f"C:\\python\\scripts\\attachments\\sort\\202408__\\{image_name}"
-            new_path = f"C:\\python\\scripts\\attachments\\sort\\202408__\\{row['fileName']}-{col[-1]}.JPG"
-
-            if os.path.exists(old_path):
-                os.rename(old_path, new_path)
-                print(
-                    f"{os.path.basename(old_path)} changed to {os.path.basename(new_path)}"
-                )
-            else:
-                print(f"Error finding {os.path.basename(old_path)}")
-
-        else:
-            print(f"Skipping feature {row[col]}")
+rename_images(df, folder_path)

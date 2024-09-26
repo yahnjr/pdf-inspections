@@ -148,10 +148,6 @@
             </div>
           </div>
           <div>
-            <button type="button" onclick="resetForm()">resetForm</button>
-          </div>
-          <br>
-          <div>
             <button id="photoButton1">Choose Photo 1</button>
             <input type="file" id="fileInput1" class="file-input" accept="image/*">
             <span id="fileName1"></span>
@@ -168,6 +164,10 @@
             <input type="file" id="fileInput3" class="file-input" accept="image/*">
             <span id="fileName3"></span>
           </div>
+          </div>
+          <div id="resetButtons">
+            <button type="button" onclick="resetForm()">Reset Form</button>
+            <button type="button" onclick="resetFormNoIntersections()">Reset Form (no Intersections)</button>
           </div>
           </div>
       
