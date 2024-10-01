@@ -59,32 +59,20 @@ function resetFormNoIntersections() {
         document.getElementById('fileName3').textContent = 'No file chosen';
     }
 }
-    
-document.getElementById('photoButton1').addEventListener('click', function() {
-    document.getElementById('fileInput1').click();
-});
 
-document.getElementById('photoButton2').addEventListener('click', function() {
-    document.getElementById('fileInput2').click();
-});
+['1', '2', '3'].forEach(num => {
+    document.getElementById(`photoButton${num}`).addEventListener('click', function() {
+        document.getElementById(`fileInput${num}`).click();
+    });
 
-document.getElementById('photoButton3').addEventListener('click', function() {
-    document.getElementById('fileInput3').click();
-});
-
-document.getElementById('fileInput1').addEventListener('change', function() {
-    const fileName = this.files[0].name;
-    document.getElementById('fileName1').textContent = fileName;
-});
-
-document.getElementById('fileInput2').addEventListener('change', function() {
-    const fileName = this.files[0].name;
-    document.getElementById('fileName2').textContent = fileName;
-});
-
-document.getElementById('fileInput3').addEventListener('change', function() {
-    const fileName = this.files[0].name;
-    document.getElementById('fileName3').textContent = fileName;
+    document.getElementById(`fileInput${num}`).addEventListener('change', function() {
+        const fileName = this.files[0].name;
+        if (fileName === 'image.jpg') {
+            document.getElementById(`fileName${num}`).textContent = 'image.jpg file rejected. Choose a photo from library.';
+        } else {
+            document.getElementById(`fileName${num}`).textContent = fileName;
+        }
+    });
 });
 
 // Create autosave file, cleared when downloading or hitting reset button
