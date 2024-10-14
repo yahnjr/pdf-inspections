@@ -92,4 +92,4 @@ def delete_image_attachments():
 
 
 # Call the delete function
-# delete_image_attachments()  # Uncomment to perform deletion after download
+delete_image_attachments()  # Uncomment to perform deletion after download
