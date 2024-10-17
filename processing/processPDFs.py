@@ -309,3 +309,36 @@ def process_specific_row(data_df, output_folder, row_index):
 
 
 process_specific_row(data_df, output_folder, 180)
+
+
+def process_rows_by_objectid(data_df, output_folder, objectid_threshold):
+    filtered_rows = data_df[data_df["fileName"] > objectid_threshold]
+
+    if filtered_rows.empty:
+        print(f"No rows found with ObjectID greater than {objectid_threshold}.")
+        return
+
+    for index, row in filtered_rows.iterrows():
+        ramp_type = row["type"]
+        file_name = row["fileName"]
+
+        if pd.isna(file_name):
+            print(f"Skipping row {index} due to missing fileName")
+            continue
+
+        try:
+            output_file_name = f"{int(file_name)}.pdf"
+        except ValueError:
+            print(
+                f"Warning: Invalid fileName '{file_name}' in row {index}. Using index as filename."
+            )
+            output_file_name = f"output_{index}.pdf"
+
+        pdf_template_path = f"C:\\python\\scripts\\pdfeditor2\\docs\\{ramp_type}.pdf"
+        output_path = os.path.join(output_folder, output_file_name)
+
+        print(f"Now processing row {index} with ObjectID '{row['fileName']}'")
+        fill_pdf_form(pdf_template_path, row, lookup_dict, output_path)
+
+
+process_rows_by_objectid(data_df, output_folder, 223)

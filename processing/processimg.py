@@ -1,8 +1,8 @@
 import pandas as pd
 import os
 
-df = pd.read_csv(r"C:\python\scripts\pdfeditor2\processing\missing_imgs.csv")
-folder_path = r"C:\\python\\scripts\\attachments\\MissingPhotos"
+df = pd.read_csv(r"C:\python\scripts\pdfeditor2\processing\combined_output.csv")
+folder_path = r"C:\python\scripts\pdfeditor2\processing\downloads\attachments"
 
 print(df.head())
 
@@ -137,7 +137,7 @@ def rename_images(df, directory):
 
             if pd.notna(image_value):  # Only proceed if the value is not NaN
                 # Construct the old file name based on the image value
-                old_file = f"{image_value}.jpg"
+                old_file = f"{image_value}"
                 old_path = os.path.join(directory, old_file)
 
                 # Check if the file exists in the directory
@@ -154,3 +154,17 @@ def rename_images(df, directory):
 
 
 rename_images(df, folder_path)
+
+
+# Change file ending if necessary
+def change_jpg_to_jpeg(folder_path):
+    for filename in os.listdir(folder_path):
+        if filename.lower().endswith(".jpg"):
+            old_file = os.path.join(folder_path, filename)
+            new_file = os.path.join(folder_path, filename[:-4] + ".jpeg")
+
+            os.rename(old_file, new_file)
+            print(f"Renamed: {old_file} -> {new_file}")
+
+
+change_jpg_to_jpeg(folder_path)

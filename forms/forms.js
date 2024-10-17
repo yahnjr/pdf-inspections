@@ -6,6 +6,11 @@ window.addEventListener('message', function(event) {
         const { nextObjectId } = event.data;
         const fileNameInput = document.getElementById('fileName');
         fileNameInput.value = `${nextObjectId}`;
+
+        if (event.data === 'refreshIframe') {
+            const iframe = document.getElementById('formIframe');
+            iframe.src = iframe.src;
+        }
     });
 
 // document.getElementById('curb-avg-button').addEventListener('click', function() {
@@ -39,8 +44,12 @@ function resetForm() {
       document.getElementById('fileName1').textContent = 'No file chosen';
       document.getElementById('fileName2').textContent = 'No file chosen';
       document.getElementById('fileName3').textContent = 'No file chosen';
-    }
+
+      setTimeout(() => {
+        window.parent.location.reload();
+    }, 1000);
   }
+}
 
 function resetFormNoIntersections() {
     if (confirm('Are you sure you would like to reset the form?')) {
@@ -57,6 +66,10 @@ function resetFormNoIntersections() {
         document.getElementById('fileName1').textContent = 'No file chosen';
         document.getElementById('fileName2').textContent = 'No file chosen';
         document.getElementById('fileName3').textContent = 'No file chosen';
+
+        setTimeout(() => {
+            window.parent.location.reload();
+        }, 1000);
     }
 }
 
@@ -69,6 +82,7 @@ function resetFormNoIntersections() {
         const fileName = this.files[0].name;
         if (fileName === 'image.jpg') {
             document.getElementById(`fileName${num}`).textContent = 'image.jpg file rejected. Choose a photo from library.';
+            document.getElementById(`fileName${num}`).style = 'color: red;';
         } else {
             document.getElementById(`fileName${num}`).textContent = fileName;
         }
@@ -135,9 +149,3 @@ document.getElementById('calculateAverage').addEventListener('click', function()
 setInterval(autoSave, 500);
 
 window.addEventListener('load', restoreData);
-
-// Confirm before leaving the page
-window.addEventListener('beforeunload', function (event) {
-    event.preventDefault();
-    event.returnValue = '';
-});

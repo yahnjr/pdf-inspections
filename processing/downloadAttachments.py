@@ -27,7 +27,8 @@ def downloadAttachments(feature_layer_url, output_folder, last_download):
 
     # Specify the file types to download
     table_extensions = [".xlsx", ".xls"]
-    image_extensions = [".jpg", ".jpeg"]
+    # image_extensions = [".jpg", ".jpeg"]
+    image_extensions = [".png"]
 
     # Print features with their attachments
     # if features:
@@ -96,23 +97,31 @@ def downloadAttachments(feature_layer_url, output_folder, last_download):
                             table_output = os.path.join(
                                 output_folder, f"{feature_id}.xlsx"
                             )
+
+                            # Debug: Print before download
                             print(
-                                f"Attempting to download attachment {attachment_name} for feature {feature_id}"
+                                f"Attempting to download table attachment {attachment_name} for feature {feature_id}"
                             )
 
+                            # Download the table attachment
                             attachment_url = layer.attachments.download(
-                                feature_id, attachment_id, save_path=output_folder
+                                feature_id, attachment_id, save_path=temp_output
                             )
 
+                            # Debug: Check if download succeeded
                             if os.path.exists(temp_output):
                                 print(
-                                    f"Downloaded attachment {attachment_name} to {temp_output}"
+                                    f"Downloaded table attachment {attachment_name} to {temp_output}"
                                 )
                                 os.rename(
                                     os.path.join(temp_output, attachment_name),
-                                    table_output,
+                                    table_output,  # Save with format "objectid.xlsx"
                                 )
                                 print(f"Saved table as {table_output}")
+                            else:
+                                print(
+                                    f"Failed to download or locate the table file at {temp_output}"
+                                )
                 else:
                     print(f"Skipping feature {feature_id}")
 
@@ -126,7 +135,7 @@ def downloadAttachments(feature_layer_url, output_folder, last_download):
 
 # Define variables
 feature_layer_url = "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6_results/FeatureServer/0"
-output_folder = r"C:\python\scripts\attachments\fulldown"
-last_download = 0
+output_folder = r"C:\python\scripts\pdfeditor2\processing\downloads"
+last_download = 220
 
 downloadAttachments(feature_layer_url, output_folder, last_download)
