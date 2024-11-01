@@ -4,25 +4,19 @@ import pandas as pd
 dataframes = []
 output_folder = r"C:\python\scripts\pdfeditor2\processing\downloads"
 
-# Iterate over each file in the output folder
 for file_name in os.listdir(output_folder):
     if file_name.endswith(".xlsx") or file_name.endswith(".xls"):
         file_path = os.path.join(output_folder, file_name)
 
-        # Read the Excel file into a DataFrame
         df = pd.read_excel(file_path)
 
-        # Add the "Object ID" field from the file name (minus the extension)
         object_id = os.path.splitext(file_name)[0]
         df["Object ID"] = object_id
 
-        # Append the DataFrame to the list
         dataframes.append(df)
 
-# Combine all DataFrames, keeping all fields and adding new ones as encountered
 combined_df = pd.concat(dataframes, ignore_index=True, sort=False)
 
-# Save the combined DataFrame to a new Excel file
 combined_output_path = r"C:\python\scripts\pdfeditor2\processing\combined_output2.xlsx"
 combined_df.to_excel(combined_output_path, index=False)
 
@@ -51,10 +45,8 @@ def excel2csvProcess(combined_output_path):
     def remove_vowels(text):
         return "".join(char for char in text if char.lower() not in "aeiou")
 
-    # Assign the new field names to the DataFrame
     df.columns = field_names
 
-    # Optionally, write the modified DataFrame to a new CSV file
     df.to_csv(update_csv, index=False)
 
 

@@ -28,7 +28,7 @@ def combobox(annotation, value):
 def fill_pdf_form(pdf_template_path, data, lookup, output_path):
     template_pdf = PdfReader(pdf_template_path)
     fields_updated = False
-    comments = ""  # Initialize an empty string for comments
+    comments = "" 
 
     print("\nProcessing PDF fields:")
     for page in template_pdf.pages:
@@ -92,7 +92,7 @@ def fill_pdf_form(pdf_template_path, data, lookup, output_path):
                                             fields_updated = True
                                             print(f"  Checkbox selected: {field_name}")
                                         else:
-                                            # Automatically find and fill the corresponding _FAIL field
+                                            
                                             fail_field_name = field_name.replace(
                                                 "_PASS", "_FAIL"
                                             )
@@ -212,9 +212,21 @@ def fill_pdf_form(pdf_template_path, data, lookup, output_path):
             if annotations:
                 for annotation in annotations:
                     field = annotation.get("/T")
-                    if field and field == "(ADA2_COMNT)":
-                        annotation.update(PdfDict(V=comments, AP=PdfDict()))
-                        print(f"\nComments field updated with: \n{comments}")
+                    if (
+                        field and field == "(ADA2_COMNT)"
+                    ):  
+                        existing_comments = annotation.get("/V")
+                        if existing_comments:
+                            existing_comments = str(
+                                existing_comments
+                            )
+                        else:
+                            existing_comments = ""
+
+                        updated_comments = existing_comments + " \n" + comments
+
+                        annotation.update(PdfDict(V=updated_comments, AP=PdfDict()))
+                        print(f"\nComments field updated with: \n{updated_comments}")
                         fields_updated = True
                         break
 
@@ -249,12 +261,10 @@ def process_csv_rows(data_df, output_folder):
         ramp_type = row["type"]
         file_name = row["fileName"]
 
-        # Handle potential NaN values in fileName
         if pd.isna(file_name):
             print(f"Skipping row {index} due to missing fileName")
             continue
 
-        # Use a default name if fileName is not a valid integer
         try:
             output_file_name = f"{int(file_name)}.pdf"
         except ValueError:
@@ -266,7 +276,6 @@ def process_csv_rows(data_df, output_folder):
         pdf_template_path = f"C:\\python\\scripts\\pdfeditor2\\docs\\{ramp_type}.pdf"
         output_path = os.path.join(output_folder, output_file_name)
 
-        # Fill the PDF form with the current row data
         print(f"Now processing {file_name}")
         fill_pdf_form(pdf_template_path, row, lookup_dict, output_path)
 
@@ -277,7 +286,6 @@ print(f"All rows in {combined_csv_path} processed and saved in {output_folder}")
 
 def process_specific_row(data_df, output_folder, row_index):
     try:
-        # Get the specific row by index
         row = data_df.iloc[row_index]
     except IndexError:
         print(f"Error: Row index {row_index} is out of bounds.")
@@ -286,12 +294,10 @@ def process_specific_row(data_df, output_folder, row_index):
     ramp_type = row["type"]
     file_name = row["fileName"]
 
-    # Handle potential NaN values in fileName
     if pd.isna(file_name):
         print(f"Skipping row {row_index} due to missing fileName")
         return
 
-    # Use a default name if fileName is not a valid integer
     try:
         output_file_name = f"{int(file_name)}.pdf"
     except ValueError:
@@ -303,12 +309,11 @@ def process_specific_row(data_df, output_folder, row_index):
     pdf_template_path = f"C:\\python\\scripts\\pdfeditor2\\docs\\{ramp_type}.pdf"
     output_path = os.path.join(output_folder, output_file_name)
 
-    # Fill the PDF form with the current row data
     print(f"Now processing row {row_index} with fileName '{file_name}'")
     fill_pdf_form(pdf_template_path, row, lookup_dict, output_path)
 
 
-process_specific_row(data_df, output_folder, 180)
+process_specific_row(data_df, output_folder, 243)
 
 
 def process_rows_by_objectid(data_df, output_folder, objectid_threshold):
@@ -341,4 +346,4 @@ def process_rows_by_objectid(data_df, output_folder, objectid_threshold):
         fill_pdf_form(pdf_template_path, row, lookup_dict, output_path)
 
 
-process_rows_by_objectid(data_df, output_folder, 223)
+process_rows_by_objectid(data_df, output_folder, 352)

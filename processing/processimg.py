@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 df = pd.read_csv(r"C:\python\scripts\pdfeditor2\processing\combined_output.csv")
-folder_path = r"C:\python\scripts\pdfeditor2\processing\downloads\attachments"
+folder_path = r"C:\python\scripts\attachments\pictures\sort\202409__\202408__"
 
 print(df.head())
 
@@ -86,11 +86,9 @@ for feature in features:
         for attachment in attachments:
             attachment_id = attachment["id"]
 
-            # Construct the attachment URL
             attachment_url = f"{layer_url}/{object_id}/attachments/{attachment_id}"
             attachment_params = {"token": token}
 
-            # Send a request to download the attachment
             response = requests.get(attachment_url, params=attachment_params)
 
             if response.status_code == 200:
@@ -124,38 +122,6 @@ for file in os.listdir(file_path):
 print("Renaming complete")
 
 
-def rename_images(df, directory):
-    # Loop through each row in the dataframe
-    for index, row in df.iterrows():
-        # Get the fileName attribute from the current row
-        file_name = row["fileName"]
-
-        # Loop through the image columns
-        for col in ["image1", "image2", "image3"]:
-            # Get the image value from the current column
-            image_value = row[col]
-
-            if pd.notna(image_value):  # Only proceed if the value is not NaN
-                # Construct the old file name based on the image value
-                old_file = f"{image_value}"
-                old_path = os.path.join(directory, old_file)
-
-                # Check if the file exists in the directory
-                if os.path.exists(old_path):
-                    # Create the new file name based on the fileName attribute and column number
-                    new_file = f"{file_name}-{col[-1]}.jpg"
-                    new_path = os.path.join(directory, new_file)
-
-                    # Rename the file
-                    os.rename(old_path, new_path)
-                    print(f"Renamed {old_file} to {new_file}")
-                else:
-                    print(f"File {old_file} not found in {directory}")
-
-
-rename_images(df, folder_path)
-
-
 # Change file ending if necessary
 def change_jpg_to_jpeg(folder_path):
     for filename in os.listdir(folder_path):
@@ -168,3 +134,27 @@ def change_jpg_to_jpeg(folder_path):
 
 
 change_jpg_to_jpeg(folder_path)
+
+
+def rename_images(df, directory):
+    for index, row in df.iterrows():
+        file_name = row["fileName"]
+
+        for col in ["image1", "image2", "image3"]:
+            image_value = row[col]
+
+            if pd.notna(image_value): 
+                old_file = f"{image_value}"
+                old_path = os.path.join(directory, old_file)
+
+                if os.path.exists(old_path):
+                    new_file = f"{file_name}-{col[-1]}.jpg"
+                    new_path = os.path.join(directory, new_file)
+
+                    os.rename(old_path, new_path)
+                    print(f"Renamed {old_file} to {new_file}")
+                else:
+                    print(f"File {old_file} not found in {directory}")
+
+
+rename_images(df, folder_path)

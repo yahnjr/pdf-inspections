@@ -216,7 +216,6 @@
     var mapClose = mapModal.getElementsByClassName("close")[0];
     var guideClose = guideModal.getElementsByClassName("close")[0];
 
-    // When the user clicks on the buttons, open the respective modal
     pdfBtn.onclick = function() {
       pdfModal.style.display = "block";
     }
@@ -229,7 +228,6 @@
       guideModal.style.display = "block";
     }
 
-    // When the user clicks on <span> (x), close the respective modal
     pdfClose.onclick = function() {
       pdfModal.style.display = "none";
     }
@@ -242,7 +240,6 @@
       guideModal.style.display = "none";
     }
 
-    // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
       if (event.target == pdfModal || event.target == mapModal || event.target == guideModal) {
         pdfModal.style.display = "none";
