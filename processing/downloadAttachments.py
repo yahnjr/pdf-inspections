@@ -13,7 +13,6 @@ gis = GIS("https://3j.maps.arcgis.com", username, password)
 def downloadAttachments(feature_layer_url, output_folder, last_download):
     layer = FeatureLayer(feature_layer_url)
 
-
     image_output = os.path.join(output_folder, "attachments")
     os.makedirs(image_output, exist_ok=True)
 
@@ -24,7 +23,6 @@ def downloadAttachments(feature_layer_url, output_folder, last_download):
     table_extensions = [".xlsx", ".xls"]
     # image_extensions = [".jpg", ".jpeg"]
     image_extensions = [".png"]
-
 
     if features:
         for feature in features:
@@ -90,7 +88,7 @@ def downloadAttachments(feature_layer_url, output_folder, last_download):
                                 )
                                 os.rename(
                                     os.path.join(temp_output, attachment_name),
-                                    table_output, 
+                                    table_output,
                                 )
                                 print(f"Saved table as {table_output}")
                             else:
@@ -108,9 +106,8 @@ def downloadAttachments(feature_layer_url, output_folder, last_download):
     print("All specified attachments have been downloaded.")
 
 
-# Define variables
 feature_layer_url = "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6_results/FeatureServer/0"
 output_folder = r"C:\python\scripts\pdfeditor2\processing\downloads"
-last_download = 352
+last_download = 388
 
 downloadAttachments(feature_layer_url, output_folder, last_download)

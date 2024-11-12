@@ -66,22 +66,6 @@ def update_table(combined_output, recent_output):
     print(f"{combined_output} table updated with data from {recent_output}")
 
 
-update_table(r"C:\python\scripts\pdfeditor2\processing\combined_output.csv", update_csv)
+master_table = r"C:\python\scripts\pdfeditor2\processing\combined_output.csv"
 
-combined_output = r"C:\python\scripts\pdfeditor2\processing\combined_output.csv"
-
-
-# Fixing earlier data error
-# df = pd.read_csv(combined_output)
-
-# print(df.head())
-
-# df.loc[(df["type"] != "parallel") & (df["runslope_1"] < 8.3), "runslope1_pf"] = "pass"
-
-# for index, row in df.iterrows():
-#     if row['type'] != 'parallel' and row['runslope_1'] < 8.3:
-#         print(f"Fixing P/F for row {row['fileName']} | Run slope value: {row['runslope_1']}")
-#         df.at[index, "runslope_1_pf"] = "pass"
-# print("all rows processed")
-
-# df.to_csv(r"C:\python\scripts\pdfeditor2\processing\combined_output2.csv")
+update_table(master_table, update_csv)

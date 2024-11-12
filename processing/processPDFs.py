@@ -4,7 +4,6 @@ import os
 
 
 def format_choice_value(value):
-    """Format the value for comparison with list box options."""
     return str(value).strip().lower()
 
 
@@ -28,7 +27,7 @@ def combobox(annotation, value):
 def fill_pdf_form(pdf_template_path, data, lookup, output_path):
     template_pdf = PdfReader(pdf_template_path)
     fields_updated = False
-    comments = "" 
+    comments = ""
 
     print("\nProcessing PDF fields:")
     for page in template_pdf.pages:
@@ -92,7 +91,7 @@ def fill_pdf_form(pdf_template_path, data, lookup, output_path):
                                             fields_updated = True
                                             print(f"  Checkbox selected: {field_name}")
                                         else:
-                                            
+
                                             fail_field_name = field_name.replace(
                                                 "_PASS", "_FAIL"
                                             )
@@ -212,14 +211,10 @@ def fill_pdf_form(pdf_template_path, data, lookup, output_path):
             if annotations:
                 for annotation in annotations:
                     field = annotation.get("/T")
-                    if (
-                        field and field == "(ADA2_COMNT)"
-                    ):  
+                    if field and field == "(ADA2_COMNT)":
                         existing_comments = annotation.get("/V")
                         if existing_comments:
-                            existing_comments = str(
-                                existing_comments
-                            )
+                            existing_comments = str(existing_comments)
                         else:
                             existing_comments = ""
 
@@ -238,17 +233,16 @@ def fill_pdf_form(pdf_template_path, data, lookup, output_path):
     PdfWriter().write(output_path, template_pdf)
 
 
-# Read the combined CSV file
-combined_csv_path = r"C:\python\scripts\pdfeditor2\processing\combined_output.csv"
+combined_csv_path = (
+    r"C:\python\scripts\pdfeditor2\processing\combined_processed_output.csv"
+)
 data_df = pd.read_csv(combined_csv_path)
 
-# Read the lookup CSV file
 lookup_path = r"C:\python\scripts\pdfeditor2\processing\lookup.csv"
 lookup_df = pd.read_csv(lookup_path)
 
 output_folder = r"C:\python\scripts\pdfeditor2\processing\output"
 
-# Remove rows with blank pdfField values and create lookup dictionary
 lookup_df = lookup_df.dropna(subset=["pdfField"])
 lookup_dict = pd.Series(lookup_df.csvField.values, index=lookup_df.pdfField).to_dict()
 
@@ -313,7 +307,7 @@ def process_specific_row(data_df, output_folder, row_index):
     fill_pdf_form(pdf_template_path, row, lookup_dict, output_path)
 
 
-process_specific_row(data_df, output_folder, 243)
+process_specific_row(data_df, output_folder, 84)
 
 
 def process_rows_by_objectid(data_df, output_folder, objectid_threshold):
@@ -346,4 +340,4 @@ def process_rows_by_objectid(data_df, output_folder, objectid_threshold):
         fill_pdf_form(pdf_template_path, row, lookup_dict, output_path)
 
 
-process_rows_by_objectid(data_df, output_folder, 352)
+process_rows_by_objectid(data_df, output_folder, 388)

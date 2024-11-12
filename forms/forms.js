@@ -13,26 +13,6 @@ window.addEventListener('message', function(event) {
         }
     });
 
-// document.getElementById('curb-avg-button').addEventListener('click', function() {
-//     // Prompt the user for 5 numbers
-//     let numbers = [];
-//     for (let i = 0; i < 5; i++) {
-//         let num = parseFloat(prompt(`Enter number ${i + 1}:`));
-//         if (isNaN(num)) {
-//             alert('Please enter a valid number.');
-//             return;
-//         }
-//         numbers.push(num);
-//     }
-
-//     // Calculate the average
-//     let sum = numbers.reduce((a, b) => a + b, 0);
-//     let average = sum / numbers.length;
-
-//     // Output the average to the input element
-//     document.getElementById('curb-slope').value = average;
-// });
-
 function resetForm() {
     if (confirm('Are you sure you would like to reset the form?')) {
       const inputs = document.querySelectorAll('input[type="text"], input[type="number"], select');

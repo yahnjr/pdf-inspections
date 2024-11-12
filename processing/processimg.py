@@ -1,12 +1,53 @@
 import pandas as pd
 import os
 
-df = pd.read_csv(r"C:\python\scripts\pdfeditor2\processing\combined_output.csv")
-folder_path = r"C:\python\scripts\attachments\pictures\sort\202409__\202408__"
+df = pd.read_csv(
+    r"C:\python\scripts\pdfeditor2\processing\combined_processed_output.csv"
+)
+folder_path = r"C:\Users\ianm\Desktop\3J\ADA_Outputs\attachments\pictures\sort\202411__"
 
 print(df.head())
 
 image_col = ["image1", "image2", "image3"]
+
+
+# Change file ending if necessary
+def change_jpg_to_jpeg(folder_path):
+    for filename in os.listdir(folder_path):
+        if filename.lower().endswith(".jpg"):
+            old_file = os.path.join(folder_path, filename)
+            new_file = os.path.join(folder_path, filename[:-4] + ".jpeg")
+
+            os.rename(old_file, new_file)
+            print(f"Renamed: {old_file} -> {new_file}")
+
+
+change_jpg_to_jpeg(folder_path)
+
+
+def rename_images(df, directory):
+    for index, row in df.iterrows():
+        file_name = row["fileName"]
+
+        for col in ["image1", "image2", "image3"]:
+            image_value = row[col]
+
+            if pd.notna(image_value):
+                old_file = f"{image_value}"
+                old_path = os.path.join(directory, old_file)
+
+                if os.path.exists(old_path):
+                    new_file = f"{file_name}-{col[-1]}.jpg"
+                    new_path = os.path.join(directory, new_file)
+
+                    os.rename(old_path, new_path)
+                    print(f"Renamed {old_file} to {new_file}")
+                else:
+                    print(f"File {old_file} not found in {directory}")
+
+
+rename_images(df, folder_path)
+
 
 counter = 315
 
@@ -33,6 +74,7 @@ for index, row in df.iterrows():
 
         else:
             print(f"Skipping feature {row[col]}")
+
 
 # Alternate download method for when arcgis library has infinite recursion issues
 
@@ -120,41 +162,3 @@ for file in os.listdir(file_path):
         print(f"{file} renamed to {new_file}")
 
 print("Renaming complete")
-
-
-# Change file ending if necessary
-def change_jpg_to_jpeg(folder_path):
-    for filename in os.listdir(folder_path):
-        if filename.lower().endswith(".jpg"):
-            old_file = os.path.join(folder_path, filename)
-            new_file = os.path.join(folder_path, filename[:-4] + ".jpeg")
-
-            os.rename(old_file, new_file)
-            print(f"Renamed: {old_file} -> {new_file}")
-
-
-change_jpg_to_jpeg(folder_path)
-
-
-def rename_images(df, directory):
-    for index, row in df.iterrows():
-        file_name = row["fileName"]
-
-        for col in ["image1", "image2", "image3"]:
-            image_value = row[col]
-
-            if pd.notna(image_value): 
-                old_file = f"{image_value}"
-                old_path = os.path.join(directory, old_file)
-
-                if os.path.exists(old_path):
-                    new_file = f"{file_name}-{col[-1]}.jpg"
-                    new_path = os.path.join(directory, new_file)
-
-                    os.rename(old_path, new_path)
-                    print(f"Renamed {old_file} to {new_file}")
-                else:
-                    print(f"File {old_file} not found in {directory}")
-
-
-rename_images(df, folder_path)
