@@ -108,6 +108,6 @@ def downloadAttachments(feature_layer_url, output_folder, last_download):
 
 feature_layer_url = "https://services3.arcgis.com/pZZTDhBBLO3B9dnl/arcgis/rest/services/survey123_64d4f78251234606b2b8bfd0e29ffde6_results/FeatureServer/0"
 output_folder = r"C:\python\scripts\pdfeditor2\processing\downloads"
-last_download = 388
+last_download = 435
 
 downloadAttachments(feature_layer_url, output_folder, last_download)

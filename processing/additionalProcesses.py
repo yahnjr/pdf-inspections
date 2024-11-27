@@ -34,9 +34,70 @@ df["failing_test"] = df["failing_test"].apply(
 print(df)
 
 df.to_csv(
-    r"C:\python\scripts\pdfeditor2\processing\combined_processed_output.csv",
+    r"C:\python\scripts\pdfeditor2\processing\combined_processed_output2.csv",
     index=False,
 )
+
+#### Replacing default fail field values with expanded lookup table values
+
+import pandas as pd
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+df = pd.read_csv(
+    r"C:\python\scripts\pdfeditor2\processing\combined_processed_output2.csv"
+)
+lookup_values = pd.read_excel(
+    r"O:\City of North Plains\City Projects\Misc\ADA Study\GIS\Tables\csvTextOutput1.xlsx"
+)
+
+lookup_values["csvField"] = lookup_values["csvField"].str.strip()
+
+
+def process_shorthand(shorthand):
+    shorthand_clean = shorthand.strip()
+    if shorthand_clean.endswith("_pf"):
+        shorthand_clean = shorthand_clean[:-3]
+        logging.debug(f"Removed '_pf' from shorthand: {shorthand} -> {shorthand_clean}")
+    return shorthand_clean
+
+
+for index, row in df.iterrows():
+    failing_tests = row["failing_test"]
+    logging.info(f"Working on index {index}: {failing_tests}")
+
+    if pd.notna(failing_tests):
+        tests_list = failing_tests.split(",")
+        expanded_tests = []
+
+        for shorthand in tests_list:
+            shorthand_clean = process_shorthand(shorthand)
+            logging.debug(f"Processing shorthand: {shorthand_clean}")
+
+            match = lookup_values[
+                lookup_values["csvField"].str.lower() == shorthand_clean.lower()
+            ]
+
+            if not match.empty:
+                expanded_version = match["Text Output"].values[0]
+                logging.debug(
+                    f"Found expanded version: {expanded_version} for {shorthand_clean}"
+                )
+                expanded_tests.append(expanded_version)
+            else:
+                logging.warning(
+                    f"Shorthand not found in lookup table: {shorthand_clean}"
+                )
+                expanded_tests.append(shorthand_clean)
+
+        df.at[index, "failing_test"] = ", ".join(expanded_tests)
+
+output_path = r"C:\python\scripts\pdfeditor2\processing\updated_output.csv"
+df.to_csv(output_path, index=False)
+logging.info(f"Updated CSV saved to {output_path}")
 
 
 ############ For double checking and fixing comment fields. Some pdfs don't work due to corruption, so need to exclude them.
@@ -80,7 +141,7 @@ def loop_folder_comments(input_folder, csv_path, output_path):
 
 input_folder = r"C:\Users\ianm\Desktop\3J\ADA_Outputs\processing2"
 output_path = r"C:\Users\ianm\Desktop\3J\ADA_Outputs\processing2\added_comments"
-csv_path = r"C:\python\scripts\pdfeditor2\processing\combined_output.csv"
+csv_path = r"C:\python\scripts\pdfeditor2\processing\combined_processed_output.csv"
 
 loop_folder_comments(input_folder, csv_path, output_path)
 
@@ -108,10 +169,27 @@ def check_checkbox(input_number, field_name):
     print(f"Saved {output_pdf}")
 
 
-turn_space_array = [354]
-landing_array = []
+turn_space_array = [
+    436,
+    437,
+    438,
+    439,
+    440,
+    441,
+    442,
+    443,
+    444,
+    445,
+    446,
+    447,
+    448,
+    449,
+    451,
+    452,
+    453,
+]
 
-check_checkbox(354, "TURN_SPACE_PRSNT")
+landing_array = []
 
 pdf_folder = r"C:\Users\ianm\Desktop\3J\ADA_Outputs\processing2\added_comments"
 
@@ -146,36 +224,3 @@ for filename in os.listdir(folder_path):
     print(f"{old_file} renamed to {new_file}")
 
 print("Files have been renamed successfully!")
-
-
-#### Replacing default fail field values with expanded lookup table values
-
-import pandas as pd
-
-# Read the CSV and Excel files
-df = pd.read_csv(
-    r"C:\python\scripts\pdfeditor2\processing\combined_processed_output.csv"
-)
-lookup_values = pd.read_excel(
-    r"O:\City of North Plains\City Projects\Misc\ADA Study\GIS\Tables\csvTextOutput1.xlsx"
-)
-
-for index, row in df.iterrows():
-    failing_tests = row["failing_test"]
-
-    if pd.notna(failing_tests):
-        tests_list = failing_tests.split(",")
-        expanded_tests = [
-            (
-                lookup_values.set_index("csvField").loc[
-                    shorthand.strip(), "Text Output"
-                ]
-                if shorthand.strip() in lookup_values["csvField"].values
-                else shorthand.strip()
-            )
-            for shorthand in tests_list
-        ]
-
-        df.at[index, "failing_test"] = ", ".join(expanded_tests)
-
-df.to_csv(r"C:\python\scripts\pdfeditor2\processing\updated_output.csv", index=False)

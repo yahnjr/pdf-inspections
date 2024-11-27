@@ -49,7 +49,7 @@ def rename_images(df, directory):
 rename_images(df, folder_path)
 
 
-counter = 315
+counter = 405
 
 for index, row in df.iterrows():
     for col in image_col:

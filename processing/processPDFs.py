@@ -233,9 +233,7 @@ def fill_pdf_form(pdf_template_path, data, lookup, output_path):
     PdfWriter().write(output_path, template_pdf)
 
 
-combined_csv_path = (
-    r"C:\python\scripts\pdfeditor2\processing\combined_processed_output.csv"
-)
+combined_csv_path = r"C:\python\scripts\pdfeditor2\processing\combined_output.csv"
 data_df = pd.read_csv(combined_csv_path)
 
 lookup_path = r"C:\python\scripts\pdfeditor2\processing\lookup.csv"
@@ -307,10 +305,9 @@ def process_specific_row(data_df, output_folder, row_index):
     fill_pdf_form(pdf_template_path, row, lookup_dict, output_path)
 
 
-process_specific_row(data_df, output_folder, 139)
-
-
 def process_rows_by_objectid(data_df, output_folder, objectid_threshold):
+    data_df["fileName"] = pd.to_numeric(data_df["fileName"], errors="coerce")
+
     filtered_rows = data_df[data_df["fileName"] > objectid_threshold]
 
     if filtered_rows.empty:
@@ -322,7 +319,7 @@ def process_rows_by_objectid(data_df, output_folder, objectid_threshold):
         file_name = row["fileName"]
 
         if pd.isna(file_name):
-            print(f"Skipping row {index} due to missing fileName")
+            print(f"Skipping row {index} due to missing or invalid fileName")
             continue
 
         try:
@@ -340,4 +337,4 @@ def process_rows_by_objectid(data_df, output_folder, objectid_threshold):
         fill_pdf_form(pdf_template_path, row, lookup_dict, output_path)
 
 
-process_rows_by_objectid(data_df, output_folder, 388)
+process_rows_by_objectid(data_df, output_folder, 435)
